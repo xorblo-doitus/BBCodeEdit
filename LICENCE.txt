@@ -1,1 +1,0 @@
-addons/bbcode_edit/LICENCE.txt
