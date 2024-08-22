@@ -1,0 +1,1 @@
+addons/bbcode_edit/README.md
