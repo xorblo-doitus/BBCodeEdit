@@ -2,7 +2,7 @@
 extends CodeEdit
 
 
-const BBCODE_COMPLETION_ICON = preload("res://addons/bbcode_script_editor.editor/bbcode_completion_icon.svg")
+const BBCODE_COMPLETION_ICON = preload("res://addons/bbcode_edit/bbcode_completion_icon.svg")
 
 const EQUAL_UNICODE: int = 61
 

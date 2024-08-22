@@ -1,7 +1,7 @@
 @tool
 extends EditorPlugin
 
-const BBCodeEdit: GDScript = preload("res://addons/bbcode_script_editor.editor/bbcode_edit.gd")
+const BBCodeEdit: GDScript = preload("res://addons/bbcode_edit/bbcode_edit.gd")
 const ADDON_NAME = "BBCode Editor"
 
 
