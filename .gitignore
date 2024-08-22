@@ -1,0 +1,42 @@
+########## Project specific ignores
+
+
+
+########## Other
+
+# Temporary files
+*.tmp.*
+*.tmp
+*.temp.*
+*.temp
+
+# Backups
+*.backup.*
+*.backup
+*.bkp.*
+*.bkp
+
+# Exports
+quick_export*
+
+
+########## Program specific ignores
+
+# Godot
+*.translation
+override.cfg
+
+# GUT
+.gut_editor_shortcuts.cfg
+
+# LireOffice
+*.~lock.*
+
+# GhostWriter
+*.md.backup
+
+
+########## Godot's default .gitignore
+
+# Godot 4+ specific ignores
+.godot/
