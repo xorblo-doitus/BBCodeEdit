@@ -17,7 +17,9 @@ A Godot addon that help editing BBCode in CodeEdit nodes, especially useful for 
     - [ ] Hexadecimal color preview
   - [ ] URL of files? (Don't know if file url works)
   - [ ] Documentation comments's references (Don't know feasibility)
-- [ ] BBCode preview (trough [SyntaxHighlighter](https://docs.godotengine.org/en/4.3/classes/class_syntaxhighlighter.html)?)
+- [ ] ~~BBCode preview (trough [SyntaxHighlighter](https://docs.godotengine.org/en/4.3/classes/class_syntaxhighlighter.html)?)~~\
+      Won't work because GDSCriptSyntaxHighlighter can't be extended\
+      BBCode spellcheck/semi-preview (trough `_draw()` ?)
 
 
 ## Intallation
