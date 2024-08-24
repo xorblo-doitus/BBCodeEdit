@@ -23,7 +23,7 @@ A Godot addon that help editing BBCode in CodeEdit nodes, especially useful for 
       BBCode spellcheck/semi-preview (trough `_draw()` ?)~~\
       Edit 2: Wont implement, because there is easier:
 - [ ] Add a shortcut to open:
-  - [ ] Current file documentation
+  - [x] Current file documentation (May have a problem if pressed before editor check unsaved status of the file)
   - [ ] Preview of the selected text (or autodetect start and end if no selection)
 - [ ] Add shortcuts for:
   - [ ] **bold**
