@@ -6,23 +6,38 @@ const BBCODE_COMPLETION_ICON = preload("res://addons/bbcode_edit/bbcode_completi
 
 const EQUAL_UNICODE: int = 61
 
-const LONGEST_COMPLETION: int = len("codeblock][/codeblock")
+## Test [font=res://NoitaPixel.ttf]azeiln,azlekj,azUPDATE3[/font][color=aqua]azejnzaekj[/color]
+## aaa[img width=32 height=10 color=red region=0,0,10,10 tootip=hello]res://addons/bbcode_edit/bbcode_completion_icon.svg[/img]bbb
+func doc_test()-> void:
+	pass
+const LONGEST_TAG: int = len("codeblock][/codeblock")
 # TODO add all tags and classify them between Documentation Only, Documentation Forbidden, Universal
-const COMPLETIONS: Array[String] = [
-	"br",
+const TAGS_UNIVERSAL: Array[String] = [
 	"b][/b",
 	"u][/u",
 	"i][/i",
 	"s][/s",
-	"codeblock][/codeblock",
 	"code][/code",
 	"color=][/color",
 	"lb",
 	"rb",
+	"font=][/font",
+	"img]res://[/img",
+	"img width= height=]res://[/img",
 	"url][/url",
 	"url=https://][/url",
 	"center][/center",
+]
+const TAGS_DOC_COMMENT: Array[String] = [
+	"codeblock][/codeblock",
+	"br",
 	"kbd][/kbd",
+]
+# TODO add all tags
+const TAGS_RICH_TEXT_LABEL: Array[String] = [
+	# TODO complete with all options
+	"font name= size=][/font]",
+	'url={"": }][/url',
 ]
 
 const LONGEST_COLOR: int = len("medium_spring_green")
@@ -199,8 +214,8 @@ func add_completion_options() -> void:
 	
 	var to_test: String = substr_clamped_start(
 		line,
-		column_i - LONGEST_COMPLETION,
-		LONGEST_COMPLETION
+		column_i - LONGEST_TAG,
+		LONGEST_TAG
 	)
 	print("Split is : ", to_test)
 	to_test = to_test.split("]")[-1].split("=")[-1]
@@ -211,7 +226,8 @@ func add_completion_options() -> void:
 		update_code_completion_options(true)
 		return
 	
-	var completions: Array[String] = COMPLETIONS
+	# TODO only propose valid tags
+	var completions: Array[String] = TAGS_UNIVERSAL + TAGS_DOC_COMMENT + TAGS_RICH_TEXT_LABEL
 	print("First completion is: ", completions[0])
 	for completion in completions:
 		add_code_completion_option(
