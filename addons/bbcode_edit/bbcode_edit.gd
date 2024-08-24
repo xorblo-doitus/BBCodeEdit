@@ -197,6 +197,7 @@ func _init() -> void:
 		return
 	print("INIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIT")
 	code_completion_requested.connect(add_completion_options)
+	text_changed.connect(_on_text_changed)
 	code_completion_prefixes += ["["] # Use assignation because append don't work
 	set_meta(&"initialized", true)
 
@@ -208,6 +209,8 @@ func add_completion_options() -> void:
 	var column_i: int = get_caret_column()
 	
 	if is_in_comment(line_i, column_i) == -1 and is_in_string(line_i, column_i) == -1:
+		if line[column_i-1] == "[":
+			cancel_code_completion()
 		return
 	
 	check_other_completions()
@@ -427,3 +430,15 @@ func _fetch_node(parent: Node, type: String) -> Node:
 		if child.name.begins_with(type):
 			return child
 	return null
+
+
+func _on_text_changed() -> void:
+	var line_i: int = get_caret_line()
+	var column_i: int = get_caret_column()
+	var line: String = get_line(get_caret_line())
+	if (
+		is_in_comment(line_i, column_i) == -1
+		and is_in_string(line_i, column_i) == -1
+		and line[column_i-1] == "["
+	):
+		cancel_code_completion() # Prevent completing when typing array fast

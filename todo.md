@@ -1,1 +1,0 @@
-- [ ] Fix typing `[` then enter outside doc comment triggers directly completion
