@@ -2,5 +2,17 @@ class_name Named
 extends Node
 
 
-## Test doc comment UPDATE OFFLINETROLOLOL
+## Press [color=   red   
+## ]Ctrl + C oh no[/color].
+## [b
+## 
+##]
+##space
+## space
+##
+## [
+## color=red]
+##  space
+##   space[/color]
+## [c
 var truc: bool

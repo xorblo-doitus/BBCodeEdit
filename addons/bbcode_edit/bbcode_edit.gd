@@ -4,13 +4,11 @@ extends CodeEdit
 
 const BBCODE_COMPLETION_ICON = preload("res://addons/bbcode_edit/bbcode_completion_icon.svg")
 
-const EQUAL_UNICODE: int = 61
-
 ## Test [font=res://NoitaPixel.ttf]azeiln,azlekj,azUPDATE3[/font][color=aqua]azejnzaekj[/color]
 ## aaa[img width=32 height=10 color=red region=0,0,10,10 tootip=hello]res://addons/bbcode_edit/bbcode_completion_icon.svg[/img]bbb
 func doc_test()-> void:
 	pass
-const LONGEST_TAG: int = len("codeblock][/codeblock")
+
 # TODO add all tags and classify them between Documentation Only, Documentation Forbidden, Universal
 const TAGS_UNIVERSAL: Array[String] = [
 	"b][/b",
@@ -40,7 +38,6 @@ const TAGS_RICH_TEXT_LABEL: Array[String] = [
 	'url={"": }][/url',
 ]
 
-const LONGEST_COLOR: int = len("medium_spring_green")
 const COLORS: Array[StringName] = [
 	"alice_blue",
 	"antique_white",
@@ -207,26 +204,43 @@ func add_completion_options() -> void:
 	var line_i: int = get_caret_line()
 	var line: String = get_line(line_i)
 	var column_i: int = get_caret_column()
+	var comment_i: int = is_in_comment(line_i, column_i)
+	var string_i: int = is_in_string(line_i, column_i)
 	
-	if is_in_comment(line_i, column_i) == -1 and is_in_string(line_i, column_i) == -1:
+	if string_i == -1 and get_delimiter_start_key(comment_i) != "##":
 		if line[column_i-1] == "[":
 			cancel_code_completion()
 		return
+	#print(text)
+	#check_other_completions()
+	## [color=alic]Inner[/color]
 	
-	check_other_completions()
+	var to_test: String
 	
-	var to_test: String = substr_clamped_start(
-		line,
-		column_i - LONGEST_TAG,
-		LONGEST_TAG
-	)
-	print("Split is : ", to_test)
-	to_test = to_test.split("]")[-1].split("=")[-1]
-	print(to_test)
+	if string_i != -1:
+		var start: Vector2i = get_delimiter_start_position(line_i, column_i)
+		if start.y == line_i:
+			to_test = line.substr(start.x, column_i - start.x)
+		else:
+			to_test = line.left(column_i)
+	else:
+		to_test = trim_doc_comment_start(line.left(column_i))
+		var prev_line_i: int = line_i - 1
+		var prev_line: String = get_line(prev_line_i).strip_edges(true, false)
+		while prev_line.begins_with("##"):
+			to_test = prev_line.trim_prefix("##").strip_edges() + " " + to_test
+			prev_line_i += 1
+			prev_line = get_line(prev_line_i).strip_edges(true, false)
+	
+	to_test = to_test.split("]")[-1]#.split("=")[-1]
+	print_rich("to_test:[color=magenta][code] ", to_test)
 	
 	if "[" not in to_test:
 		print("No BRACKET")
 		update_code_completion_options(true)
+		return
+	
+	if check_other_completions(to_test):
 		return
 	
 	# TODO only propose valid tags
@@ -243,29 +257,32 @@ func add_completion_options() -> void:
 	
 	update_code_completion_options(true) # NEEDED so that `[` triggers popup
 
-func check_other_completions() -> bool:
-	var line: String = get_line(get_caret_line())
-	var column: int = get_caret_column()
-	var to_check
+
+func trim_doc_comment_start(line: String) -> String:
+	return line.strip_edges(true, false).trim_prefix("##").strip_edges(true, false)
+
+
+func check_other_completions(to_test: String) -> bool:
+	to_test = to_test.split("[")[-1]
+	var parts: PackedStringArray = to_test.split(" ", false)
 	
-	var to_test: String = substr_clamped_start(
-		line,
-		column - LONGEST_COLOR,
-		LONGEST_COLOR
-	)
+	var parameters: PackedStringArray = PackedStringArray()
+	var values: PackedStringArray = PackedStringArray()
+	for part in parts:
+		# TODO MAYBE impleement sub parameter handling ? (e.g. [font otv="wght=200,wdth=400"])
+		var split: PackedStringArray = part.split("=", 1)
+		parameters.append(split[0])
+		values.append(split[1] if split.size() == 2 else "MALFORMED")
 	
-	print("Color substr is: ", to_test)
-	to_test = to_test.split("[")[-1].get_slice("]", 0)
-	print("Color final to_test is: ", to_test)
+	print_rich("Parameters:[color=magenta] ", parameters)
+	print_rich("Values:[color=magenta] ", values)
 	
-	var parameter: String = to_test.get_slicec(EQUAL_UNICODE, 0)
-	
-	match parameter:
-		"":
-			return false
-		"color":
-			add_color_completions()
-			return true
+	if parameters.size() == 1:
+		match parameters[0]:
+			"color":
+				print("COLOR")
+				add_color_completions()
+				return true
 	
 	return false
 
@@ -296,6 +313,7 @@ func add_color_completions() -> void:
 			icon,
 			Color.from_string(color, Color.RED),
 		)
+	update_code_completion_options(true)
 
 
 func _confirm_code_completion(replace: bool = false) -> void:
@@ -343,9 +361,7 @@ func _confirm_code_completion(replace: bool = false) -> void:
 	
 	end_complex_operation()
 	
-	if check_other_completions():
-		update_code_completion_options(true)
-		
+	request_code_completion()
 
 
 #[color=alice_blue][/color][code][/code]aa
@@ -422,6 +438,16 @@ func is_unsaved() -> bool:
 	print("SUCCED")
 	var item_list: ItemList = pointer
 	return item_list.get_item_text(item_list.get_selected_items()[0]).ends_with("(*)")
+
+
+#func get_text_by_coordinates(from: Vector2i, to: Vector2i) -> String:
+	##if from.y == to.y:
+		##return get_line(from.y).substr(from.x, to.x-from.x)
+	#
+	#var result: String = get_line(from.y).substr(from.x)
+	#for line_i in range(from.y+1, to.y):
+		#result += "\n" + get_line(line_i)
+	#return result + "\n" + get_line(to.y).left(to.x)
 
 
 func _fetch_node(parent: Node, type: String) -> Node:
