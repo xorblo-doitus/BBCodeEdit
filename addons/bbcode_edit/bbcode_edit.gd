@@ -277,7 +277,7 @@ func check_other_completions(to_test: String) -> bool:
 	print_rich("Parameters:[color=magenta] ", parameters)
 	print_rich("Values:[color=magenta] ", values)
 	
-	if parameters.size() == 1:
+	if parameters.size() == 1 and values[0] != "MALFORMED":
 		match parameters[0]:
 			"color":
 				print("COLOR")
