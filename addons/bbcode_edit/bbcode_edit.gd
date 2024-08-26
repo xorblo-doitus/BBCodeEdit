@@ -9,6 +9,8 @@ const BBCODE_COMPLETION_ICON = preload("res://addons/bbcode_edit/bbcode_completi
 func doc_test()-> void:
 	pass
 
+
+#region Completion options
 # TODO add all tags and classify them between Documentation Only, Documentation Forbidden, Universal
 const TAGS_UNIVERSAL: Array[String] = [
 	"b][/b",
@@ -186,6 +188,7 @@ const COLORS: Array[StringName] = [
 	"yellow",
 	"yellow_green",
 ]
+#endregion
 
 
 func _init() -> void:
