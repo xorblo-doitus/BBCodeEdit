@@ -210,10 +210,13 @@ func add_completion_options() -> void:
 	var comment_i: int = is_in_comment(line_i, column_i)
 	var string_i: int = is_in_string(line_i, column_i)
 	
-	if string_i == -1 and get_delimiter_start_key(comment_i) != "##":
+	if string_i == -1 and (comment_i == -1 or get_delimiter_start_key(comment_i) != "##"):
 		if line[column_i-1] == "[":
+			print_rich("[color=red]Emergency cancel[/color]")
 			cancel_code_completion()
+		print_rich("[color=red]not in bbcode completion[/color]")
 		return
+	print_rich("[color=red]in bbcode completion[/color]")
 	#print(text)
 	#check_other_completions()
 	## [color=alic]Inner[/color]
@@ -339,6 +342,7 @@ func _confirm_code_completion(replace: bool = false) -> void:
 	var remove_redondant_quote_and_bracket: bool = false
 	
 	if is_bbcode:
+		print_rich("[color=red]BBCode is true[/color]")
 		if is_in_string(get_caret_line(), get_caret_column()) == -1:
 			for caret in get_caret_count():
 				var line: String = get_line(get_caret_line(caret)) + " " # Add space so that column is in range
@@ -394,12 +398,14 @@ func _confirm_code_completion(replace: bool = false) -> void:
 			for caret in get_caret_count():
 				set_caret_column(get_caret_column(caret) - column_backward, false, caret)
 	elif selected_completion["icon"] == get_color_icon():
+		print_rich("[color=red]Color is true[/color]")
 		for caret in get_caret_count():
 			set_caret_column(get_caret_column(caret) + 1, false, caret) 
 	
 	end_complex_operation()
 	
-	request_code_completion()
+	if is_bbcode:
+		request_code_completion()
 
 
 #[color=alice_blue][/color][code][/code]aa
