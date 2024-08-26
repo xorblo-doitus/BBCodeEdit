@@ -217,7 +217,7 @@ func add_completion_options() -> void:
 	
 	var to_test: String
 	
-	if string_i != -1:
+	if comment_i == -1:
 		var start: Vector2i = get_delimiter_start_position(line_i, column_i)
 		if start.y == line_i:
 			to_test = line.substr(start.x, column_i - start.x)
@@ -245,17 +245,28 @@ func add_completion_options() -> void:
 	
 	# TODO only propose valid tags
 	var completions: Array[String] = TAGS_UNIVERSAL + TAGS_DOC_COMMENT + TAGS_RICH_TEXT_LABEL
+	var displays: Array[String] = []
+	displays.assign(completions.map(bracket))
+	
+	if comment_i == -1:
+		completions = displays
+	
 	print("First completion is: ", completions[0])
-	for completion in completions:
+	
+	for i in completions.size():
 		add_code_completion_option(
 			CodeEdit.KIND_PLAIN_TEXT,
-			"[" + completion + "]",
-			completion,
+			displays[i],
+			completions[i],
 			get_theme_color(&"font_color"),
 			BBCODE_COMPLETION_ICON,
 		)
 	
 	update_code_completion_options(true) # NEEDED so that `[` triggers popup
+
+
+func bracket(string: String) -> String:
+	return "[" + string + "]"
 
 
 func trim_doc_comment_start(line: String) -> String:
@@ -322,13 +333,19 @@ func _confirm_code_completion(replace: bool = false) -> void:
 	var selected_completion: Dictionary = get_code_completion_option(get_code_completion_selected_index())
 	var is_bbcode: bool = selected_completion["icon"] == BBCODE_COMPLETION_ICON
 	
+	var remove_redondant_quote_and_bracket: bool = false
+	
 	if is_bbcode:
-		for caret in get_caret_count():
-			var line: String = get_line(get_caret_line(caret))
-			var column: int = get_caret_column(caret)
-			if not(line.length() > column and line[column] == "]"):
-				insert_text_at_caret("]", caret)
-				set_caret_column(get_caret_column(caret)-1, false, caret)
+		if is_in_string(get_caret_line(), get_caret_column()) == -1:
+			for caret in get_caret_count():
+				var line: String = get_line(get_caret_line(caret)) + " " # Add space so that column is in range
+				var column: int = get_caret_column(caret)
+				if not line[column] == "]":
+					insert_text_at_caret("]", caret)
+					# Replace caret at it's previous column
+					set_caret_column(column, false, caret)
+		else:
+			remove_redondant_quote_and_bracket = true
 	
 	# Don't use the following code, it's a dev crime.
 	# Oops, I just did...
@@ -340,6 +357,24 @@ func _confirm_code_completion(replace: bool = false) -> void:
 	set_script(script)
 	
 	if is_bbcode:
+		if remove_redondant_quote_and_bracket:
+			for caret in get_caret_count():
+				print_rich("[color=red]REMOVE USELESS[/color]")
+				var line_i: int = get_caret_line(caret)
+				var line: String = get_line(line_i)
+				var column_i: int = get_caret_column(caret)
+				var to_remove: int = 1
+				if column_i < line.length():
+					if line[column_i] == "]":
+						to_remove = 2
+				else:
+					continue
+				remove_text(
+					line_i,
+					column_i - to_remove,
+					line_i,
+					column_i,
+				)
 		var inserted_text: String = selected_completion["insert_text"]
 		var first_bracket: int = inserted_text.find("]")
 		var first_equal: int = inserted_text.find("=")
