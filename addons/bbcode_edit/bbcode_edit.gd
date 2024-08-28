@@ -208,9 +208,8 @@ func add_completion_options() -> void:
 	var line: String = get_line(line_i)
 	var column_i: int = get_caret_column()
 	var comment_i: int = is_in_comment(line_i, column_i)
-	var string_i: int = is_in_string(line_i, column_i)
 	
-	if string_i == -1 and (comment_i == -1 or get_delimiter_start_key(comment_i) != "##"):
+	if comment_i == -1 or get_delimiter_start_key(comment_i) != "##":
 		if line[column_i-1] == "[":
 			print_rich("[color=red]Emergency cancel[/color]")
 			cancel_code_completion()
@@ -223,20 +222,13 @@ func add_completion_options() -> void:
 	
 	var to_test: String
 	
-	if comment_i == -1:
-		var start: Vector2i = get_delimiter_start_position(line_i, column_i)
-		if start.y == line_i:
-			to_test = line.substr(start.x, column_i - start.x)
-		else:
-			to_test = line.left(column_i)
-	else:
-		to_test = trim_doc_comment_start(line.left(column_i))
-		var prev_line_i: int = line_i - 1
-		var prev_line: String = get_line(prev_line_i).strip_edges(true, false)
-		while prev_line.begins_with("##"):
-			to_test = prev_line.trim_prefix("##").strip_edges() + " " + to_test
-			prev_line_i += 1
-			prev_line = get_line(prev_line_i).strip_edges(true, false)
+	to_test = trim_doc_comment_start(line.left(column_i))
+	var prev_line_i: int = line_i - 1
+	var prev_line: String = get_line(prev_line_i).strip_edges(true, false)
+	while prev_line.begins_with("##"):
+		to_test = prev_line.trim_prefix("##").strip_edges() + " " + to_test
+		prev_line_i += 1
+		prev_line = get_line(prev_line_i).strip_edges(true, false)
 	
 	to_test = to_test.split("]")[-1]#.split("=")[-1]
 	print_rich("to_test:[color=magenta][code] ", to_test)
@@ -253,9 +245,6 @@ func add_completion_options() -> void:
 	var completions: Array[String] = TAGS_UNIVERSAL + TAGS_DOC_COMMENT + TAGS_RICH_TEXT_LABEL
 	var displays: Array[String] = []
 	displays.assign(completions.map(bracket))
-	
-	if comment_i == -1:
-		completions = displays
 	
 	print("First completion is: ", completions[0])
 	
@@ -343,16 +332,13 @@ func _confirm_code_completion(replace: bool = false) -> void:
 	
 	if is_bbcode:
 		print_rich("[color=red]BBCode is true[/color]")
-		if is_in_string(get_caret_line(), get_caret_column()) == -1:
-			for caret in get_caret_count():
-				var line: String = get_line(get_caret_line(caret)) + " " # Add space so that column is in range
-				var column: int = get_caret_column(caret)
-				if not line[column] == "]":
-					insert_text_at_caret("]", caret)
-					# Replace caret at it's previous column
-					set_caret_column(column, false, caret)
-		else:
-			remove_redondant_quote_and_bracket = true
+		for caret in get_caret_count():
+			var line: String = get_line(get_caret_line(caret)) + " " # Add space so that column is in range
+			var column: int = get_caret_column(caret)
+			if not line[column] == "]":
+				insert_text_at_caret("]", caret)
+				# Replace caret at it's previous column
+				set_caret_column(column, false, caret)
 	
 	# Don't use the following code, it's a dev crime.
 	# Oops, I just did...
@@ -363,32 +349,17 @@ func _confirm_code_completion(replace: bool = false) -> void:
 	super.confirm_code_completion(replace)
 	set_script(script)
 	
+	print("hello")
 	if is_bbcode:
-		if remove_redondant_quote_and_bracket:
-			for caret in get_caret_count():
-				print_rich("[color=red]REMOVE USELESS[/color]")
-				var line_i: int = get_caret_line(caret)
-				var line: String = get_line(line_i)
-				var column_i: int = get_caret_column(caret)
-				var to_remove: int = 1
-				if column_i < line.length():
-					if line[column_i] == "]":
-						to_remove = 2
-				else:
-					continue
-				remove_text(
-					line_i,
-					column_i - to_remove,
-					line_i,
-					column_i,
-				)
 		var inserted_text: String = selected_completion["insert_text"]
 		var first_bracket: int = inserted_text.find("]")
 		var first_equal: int = inserted_text.find("=")
 		var column_backward: int = 9999
 		
+		print_rich("First bracket: [color=blue]", first_bracket)
 		if first_bracket != -1:
 			column_backward = first_bracket
+			print_rich("Column backward: [color=red]", column_backward)
 		
 		if first_equal != -1 and first_equal < column_backward:
 			column_backward = first_equal

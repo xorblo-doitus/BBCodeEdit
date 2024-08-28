@@ -1,5 +1,5 @@
 # BBCodeEdit
-A Godot addon that help editing BBCode in CodeEdit nodes, especially useful for document comments in the ScriptEditor.
+A Godot addon that help editing BBCode in CodeEdit nodes, especially useful for documentation comments in the ScriptEditor.
 
 
 # Features
@@ -34,6 +34,7 @@ A Godot addon that help editing BBCode in CodeEdit nodes, especially useful for 
   - [ ] ~~striketrough~~
   - [ ] <u>underline</u>
   - [ ] etc.
+- [ ] Add an external code edit in the editor to write bbcode, because completion inside strings is a nightmare due to builtin behaviors
 
 
 ## Intallation

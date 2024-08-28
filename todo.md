@@ -1,1 +1,1 @@
-- [ ] Fix unshowing completion options in strings with text before the tag, probably due to the appended quote. (Maybe by adding the whole starting string?) + Needs testing: work if multiline string?
+- [ ] Refactor cursor repositionning after completion
