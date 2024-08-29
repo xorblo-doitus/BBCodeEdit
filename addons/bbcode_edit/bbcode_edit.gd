@@ -3,12 +3,11 @@ extends CodeEdit
 
 
 const BBCODE_COMPLETION_ICON = preload("res://addons/bbcode_edit/bbcode_completion_icon.svg")
+const COLOR_PICKER_CONTAINER_PATH = ^"_BBCodeEditColorPicker"
+const COLOR_PICKER_PATH = ^"_BBCodeEditColorPicker/ColorPicker"
 
-## Test [font=res://NoitaPixel.ttf]azeiln,azlekj,azUPDATE3[/font][color=aqua]azejnzaekj[/color]
-## aaa[img width=32 height=10 color=red region=0,0,10,10 tootip=hello]res://addons/bbcode_edit/bbcode_completion_icon.svg[/img]bbb
-func doc_test()-> void:
-	pass
-
+const COMMAND_PREFIX_CHAR = "\u0001"
+const _COMMAND_COLOR_PICKER = "color_picker"
 
 #region Completion options
 # TODO add all tags and classify them between Documentation Only, Documentation Forbidden, Universal
@@ -283,9 +282,6 @@ func check_other_completions(to_test: String) -> bool:
 	print_rich("Parameters:[color=magenta] ", parameters)
 	print_rich("Values:[color=magenta] ", values)
 	
-	## [color=999][/color]
-	## 0f0
-	#var test = "h0f0"
 	if parameters.size() == 1 and values[0] != "MALFORMED":
 		var value: String = values[0]
 		match parameters[0]:
@@ -298,7 +294,6 @@ func check_other_completions(to_test: String) -> bool:
 					print("Create hex")
 					if value.is_valid_int():
 						insert_text(HEX_PREFIX, get_caret_line(), get_caret_column()-value.length())
-						#update_code_completion_options(true)
 						request_code_completion.call_deferred(true)
 					add_hex_color(value)
 					
@@ -347,13 +342,35 @@ func add_color_completions() -> void:
 			icon,
 			Color.from_string(color, Color.RED),
 		)
+	
+	add_code_completion_option(
+		CodeEdit.KIND_PLAIN_TEXT,
+		COMMAND_PREFIX_CHAR + "Bring color picker",
+		_COMMAND_COLOR_PICKER,
+		get_theme_color(&"font_color"),
+		EditorInterface.get_base_control().get_theme_icon("ColorPicker", "EditorIcons"),
+	)
 	update_code_completion_options(true)
 
 
 func _confirm_code_completion(replace: bool = false) -> void:
-	begin_complex_operation()
-	
 	var selected_completion: Dictionary = get_code_completion_option(get_code_completion_selected_index())
+	if selected_completion["display_text"][0] == COMMAND_PREFIX_CHAR:
+		match selected_completion["insert_text"]:
+			_COMMAND_COLOR_PICKER:
+				if not has_node(^"BBCODE_EDIT_COLOR_PICKER"):
+					add_child(preload("res://addons/bbcode_edit/color_picker.tscn").instantiate())
+				var container: PopupPanel = get_node(COLOR_PICKER_CONTAINER_PATH)
+				var picker: ColorPicker = get_node(COLOR_PICKER_PATH)
+				
+				container.position = Vector2(get_pos_at_line_column(get_caret_line(), get_caret_column())) + global_position + Vector2(0, get_line_height())
+				container.add_theme_stylebox_override(&"panel", EditorInterface.get_base_control().get_theme_stylebox(&"Content", &"EditorStyles"))
+				picker.color_changed.connect(_on_color_picker_color_changed)
+		
+		cancel_code_completion()
+		return
+	
+	begin_complex_operation()
 	var is_bbcode: bool = selected_completion["icon"] == BBCODE_COMPLETION_ICON
 	
 	var remove_redondant_quote_and_bracket: bool = false
@@ -413,6 +430,9 @@ func _confirm_code_completion(replace: bool = false) -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
+	if has_node(COLOR_PICKER_CONTAINER_PATH):
+		if (event is InputEventKey or event is InputEventMouseButton) and event.is_pressed():
+			get_node(COLOR_PICKER_CONTAINER_PATH).free()
 	pass
 	#print("HELLO")
 	#print(InputMap.get_actions())
@@ -515,3 +535,29 @@ func _on_text_changed() -> void:
 		and line[column_i-1] == "["
 	):
 		cancel_code_completion() # Prevent completing when typing array fast
+
+
+func _on_color_picker_color_changed(color: Color) -> void:
+	print("Color changed")
+	var hex: String = color.to_html(color.a8 != 255)
+	for caret in get_caret_count():
+		var line_i: int = get_caret_line(caret)
+		var line: String = get_line(line_i)
+		var column_i: int = get_caret_column(caret)
+		## [color=][/color]
+		if line[column_i] != "]" and line[column_i] != " ":
+			var to_scan: String = line.substr(column_i)
+			print(to_scan)
+			var end: int = to_scan.find("]")
+			print(end)
+			if end == -1:
+				end = to_scan.find(" ")
+			else:
+				var other: int = to_scan.find(" ")
+				if other != -1 and other < end:
+					end = other
+			print(line.left(column_i))
+			print(to_scan.substr(end))
+			set_line(line_i, line.left(column_i) + to_scan.substr(end))
+		insert_text_at_caret(hex, caret)
+		set_caret_column(column_i)

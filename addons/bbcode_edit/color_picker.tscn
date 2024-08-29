@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://ofreh5nfb6pa"]
+
+[node name="_BBCodeEditColorPicker" type="PopupPanel"]
+size = Vector2i(306, 584)
+visible = true
+
+[node name="ColorPicker" type="ColorPicker" parent="."]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 302.0
+offset_bottom = 580.0
+color = Color(0.83233, 0, 0.367475, 1)
+deferred_mode = true
+picker_shape = 3
