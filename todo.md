@@ -1,1 +1,2 @@
-- [ ] Find a way to complete numreic values for color.
+- [x] Find a way to complete numreic values for color.
+- [ ] Fix `|` showing up in display text

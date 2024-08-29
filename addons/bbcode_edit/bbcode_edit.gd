@@ -283,23 +283,25 @@ func check_other_completions(to_test: String) -> bool:
 	print_rich("Parameters:[color=magenta] ", parameters)
 	print_rich("Values:[color=magenta] ", values)
 	
-	## [color=][/color]
+	## [color=999][/color]
+	## 0f0
+	#var test = "h0f0"
 	if parameters.size() == 1 and values[0] != "MALFORMED":
 		var value: String = values[0]
 		match parameters[0]:
 			"color":
 				print("COLOR")
-				if value.is_valid_html_color():
-					print_rich("Valid color:", value, "[color=", value, "]██████")
-					var color: Color = Color.html(value)
-					add_code_completion_option(
-						CodeEdit.KIND_PLAIN_TEXT,
-						"#" + value + "noise",
-						value,
-						get_theme_color(&"font_color"),
-						get_color_icon(),
-						Color.html(value),
-					)
+				if value.begins_with(HEX_PREFIX) and value.substr(HEX_PREFIX.length()).is_valid_html_color():
+					print("Hex")
+					add_hex_color(value.substr(HEX_PREFIX.length()), true)
+				elif value.is_valid_html_color():
+					print("Create hex")
+					if value.is_valid_int():
+						insert_text(HEX_PREFIX, get_caret_line(), get_caret_column()-value.length())
+						#update_code_completion_options(true)
+						request_code_completion.call_deferred(true)
+					add_hex_color(value)
+					
 				add_color_completions()
 				return true
 	
@@ -315,6 +317,19 @@ func substr_clamped_start(str: String, from: int, len: int) -> String:
 		from = 0
 	
 	return str.substr(from, len)
+
+
+const HEX_PREFIX = "0x"
+func add_hex_color(hex: String, include_prefix: bool = false) -> void:
+	print_rich("Valid color: ", hex, " [color=", hex, "]██████")
+	add_code_completion_option(
+		CodeEdit.KIND_PLAIN_TEXT,
+		HEX_PREFIX + hex + " ",
+		HEX_PREFIX + hex if include_prefix else hex,
+		get_theme_color(&"font_color"),
+		get_color_icon(),
+		Color.html(hex),
+	)
 
 
 func get_color_icon() -> Texture2D:
@@ -375,6 +390,18 @@ func _confirm_code_completion(replace: bool = false) -> void:
 			set_line(line_i, line.left(first_pipe) + line.substr(pipe_end))
 			set_caret_column(pipe_end-1, false, caret)
 	elif selected_completion["icon"] == get_color_icon():
+		## [color=000][/color]
+		var line_i: int = get_caret_line()
+		var line: String = get_line(line_i)
+		var column: int = get_caret_column()
+		var color_start: int = column - selected_completion["display_text"].length() + 1
+		if line.substr(color_start).begins_with(HEX_PREFIX):
+			set_line(
+				line_i,
+				line.left(color_start) + line.substr(color_start + HEX_PREFIX.length())
+			)
+			set_caret_column(column - HEX_PREFIX.length())
+		
 		print_rich("[color=red]Color is true[/color]")
 		for caret in get_caret_count():
 			set_caret_column(get_caret_column(caret) + 1, false, caret) 
