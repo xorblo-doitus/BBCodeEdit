@@ -13,31 +13,31 @@ func doc_test()-> void:
 #region Completion options
 # TODO add all tags and classify them between Documentation Only, Documentation Forbidden, Universal
 const TAGS_UNIVERSAL: Array[String] = [
-	"b][/b",
-	"u][/u",
-	"i][/i",
-	"s][/s",
-	"code][/code",
-	"color=][/color",
-	"lb",
-	"rb",
-	"font=][/font",
-	"img]res://[/img",
-	"img width= height=]res://[/img",
-	"url][/url",
-	"url=https://][/url",
-	"center][/center",
+	"b]|[/b",
+	"u]|[/u",
+	"i]|[/i",
+	"s]|[/s",
+	"code]|[/code",
+	"color=|][/color",
+	"lb||",
+	"rb||",
+	"font=|][/font",
+	"img]res://|[/img",
+	"img width=| height=]res://[/img",
+	"url]|[/url",
+	"url=https://|][/url",
+	"center]|[/center",
 ]
 const TAGS_DOC_COMMENT: Array[String] = [
-	"codeblock][/codeblock",
-	"br",
-	"kbd][/kbd",
+	"codeblock]|[/codeblock",
+	"br||",
+	"kbd]|[/kbd",
 ]
 # TODO add all tags
 const TAGS_RICH_TEXT_LABEL: Array[String] = [
 	# TODO complete with all options
-	"font name= size=][/font]",
-	'url={"": }][/url',
+	"font name=| size=][/font]",
+	'url={"|": }][/url',
 ]
 
 const COLORS: Array[StringName] = [
@@ -349,25 +349,18 @@ func _confirm_code_completion(replace: bool = false) -> void:
 	super.confirm_code_completion(replace)
 	set_script(script)
 	
-	print("hello")
 	if is_bbcode:
-		var inserted_text: String = selected_completion["insert_text"]
-		var first_bracket: int = inserted_text.find("]")
-		var first_equal: int = inserted_text.find("=")
-		var column_backward: int = 9999
-		
-		print_rich("First bracket: [color=blue]", first_bracket)
-		if first_bracket != -1:
-			column_backward = first_bracket
-			print_rich("Column backward: [color=red]", column_backward)
-		
-		if first_equal != -1 and first_equal < column_backward:
-			column_backward = first_equal
-		
-		if column_backward != 9999:
-			column_backward = inserted_text.length() - column_backward - 1
-			for caret in get_caret_count():
-				set_caret_column(get_caret_column(caret) - column_backward, false, caret)
+		for caret in get_caret_count():
+			var line_i: int = get_caret_line(caret)
+			var line: String = get_line(line_i)
+			var first_pipe: int = line.find("|")
+			if first_pipe == -1: # Just in case
+				continue
+			var pipe_end: int = first_pipe + 1
+			while pipe_end < line.length() and line[pipe_end] == "|":
+				pipe_end += 1
+			set_line(line_i, line.left(first_pipe) + line.substr(pipe_end))
+			set_caret_column(pipe_end-1, false, caret)
 	elif selected_completion["icon"] == get_color_icon():
 		print_rich("[color=red]Color is true[/color]")
 		for caret in get_caret_count():
@@ -379,7 +372,6 @@ func _confirm_code_completion(replace: bool = false) -> void:
 		request_code_completion()
 
 
-#[color=alice_blue][/color][code][/code]aa
 func _gui_input(event: InputEvent) -> void:
 	pass
 	#print("HELLO")

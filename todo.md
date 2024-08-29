@@ -1,1 +1,0 @@
-- [ ] Refactor cursor repositionning after completion
