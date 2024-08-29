@@ -283,10 +283,23 @@ func check_other_completions(to_test: String) -> bool:
 	print_rich("Parameters:[color=magenta] ", parameters)
 	print_rich("Values:[color=magenta] ", values)
 	
+	## [color=][/color]
 	if parameters.size() == 1 and values[0] != "MALFORMED":
+		var value: String = values[0]
 		match parameters[0]:
 			"color":
 				print("COLOR")
+				if value.is_valid_html_color():
+					print_rich("Valid color:", value, "[color=", value, "]██████")
+					var color: Color = Color.html(value)
+					add_code_completion_option(
+						CodeEdit.KIND_PLAIN_TEXT,
+						"#" + value + "noise",
+						value,
+						get_theme_color(&"font_color"),
+						get_color_icon(),
+						Color.html(value),
+					)
 				add_color_completions()
 				return true
 	

@@ -1,0 +1,1 @@
+- [ ] Find a way to complete numreic values for color.
