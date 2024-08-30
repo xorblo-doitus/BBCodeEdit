@@ -9,6 +9,7 @@ const COLOR_PICKER_PATH = ^"_BBCodeEditColorPicker/ColorPicker"
 const COMMAND_PREFIX_CHAR = "\u0001"
 const _COMMAND_COLOR_PICKER = "color_picker"
 
+
 #region Completion options
 # TODO add all tags and classify them between Documentation Only, Documentation Forbidden, Universal
 const TAGS_UNIVERSAL: Array[String] = [
@@ -194,7 +195,6 @@ func _init() -> void:
 	set_process_input(true)
 	if has_meta(&"initialized"):
 		return
-	print("INIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIT")
 	code_completion_requested.connect(add_completion_options)
 	text_changed.connect(_on_text_changed)
 	code_completion_prefixes += ["["] # Use assignation because append don't work
@@ -215,9 +215,6 @@ func add_completion_options() -> void:
 		print_rich("[color=red]not in bbcode completion[/color]")
 		return
 	print_rich("[color=red]in bbcode completion[/color]")
-	#print(text)
-	#check_other_completions()
-	## [color=alic]Inner[/color]
 	
 	var to_test: String
 	
@@ -407,7 +404,6 @@ func _confirm_code_completion(replace: bool = false) -> void:
 			set_line(line_i, line.left(first_pipe) + line.substr(pipe_end))
 			set_caret_column(pipe_end-1, false, caret)
 	elif selected_completion["icon"] == get_color_icon():
-		## [color=000][/color]
 		var line_i: int = get_caret_line()
 		var line: String = get_line(line_i)
 		var column: int = get_caret_column()
@@ -433,10 +429,7 @@ func _gui_input(event: InputEvent) -> void:
 	if has_node(COLOR_PICKER_CONTAINER_PATH):
 		if (event is InputEventKey or event is InputEventMouseButton) and event.is_pressed():
 			get_node(COLOR_PICKER_CONTAINER_PATH).free()
-	pass
-	#print("HELLO")
-	#print(InputMap.get_actions())
-	#print(ProjectSettings.get_setting(&"input/bbcode_edit/editor/open_current_file_documentation"))
+	
 	if InputMap.event_is_action(event, "bbcode_edit/editor/open_current_file_documentation", true):
 		# TODO find a workaround for the appearance delay of (*) to check unsaved status.
 		print(event.is_pressed())
@@ -452,39 +445,16 @@ func _gui_input(event: InputEvent) -> void:
 				bbcode_edit_saved_once.append(class_name_)
 				print_rich("[color=orange]Never changed[/color]")
 				text = text
-				#text += "\n"
-				#text = text.trim_suffix("\n")
 				EditorInterface.save_all_scenes()
 			elif is_unsaved():
 				print_rich("[color=orange]Is unsaved[/color]")
 				EditorInterface.save_all_scenes()
-			#text
-			#text = text
-			#print(get_parent().get_parent().get_parent().get_parent().get_parent().get_parent().get_tree_string_pretty())
-			#get_parent().get_parent().get_parent().get_parent().get_parent().modulate = Color.WHITE
-			#$"../../../../../../@VSplitContainer@9820/@VBoxContainer@9821/@ItemList@9824".modulate = Color.WHEAT
-			#print(get_path())
-			#print("unsaved is: ", is_unsaved())
-			#print($"../../../../_addons_bbcode_edit_bbcode_edit_gd_".get_method_list())
-			#print($"../../../../_addons_bbcode_edit_bbcode_edit_gd_".get_property_list())
-			#text += "\n"
-			#text = text.trim_suffix("\n")
-			#EditorInterface.get_script_editor().get_current_editor().request_save_history.emit()
-			#Input.action_press("save")
-			#var save := InputEventKey.new()
-			#save.keycode = 83
-			##save.ctrl_pressed = true
-			#save.command_or_control_autoremap = true
-			#Input.parse_input_event(save)
-			#EditorInterface.save_all_scenes()
-			#text_changed.emit()
 		elif is_unsaved():
 			print_rich("[color=orange]Is unsaved[/color]")
 			EditorInterface.save_all_scenes()
 		print(class_name_)
 		
 		EditorInterface.get_script_editor().get_current_editor().go_to_help.emit.call_deferred("class_name:"+class_name_)
-		#EditorInterface.get_script_editor().get_current_editor().go_to_help.emit("class_name:\"addons/bbcode_edit/bbcode_edit.gd\"")
 
 
 ## Scrap the Editor tree to find if it's unsaved.
@@ -493,28 +463,15 @@ func is_unsaved() -> bool:
 	var pointer: Node = $"../../../../../.."
 	
 	if pointer == null:
-		print("FAILURE")
 		return false
 	
 	for node_type: String in ["VSplitContainer", "VBoxContainer", "ItemList"]:
 		pointer = _fetch_node(pointer, node_type)
 		if pointer == null:
-			print("FAILURE")
 			return false
 	
-	print("SUCCED")
 	var item_list: ItemList = pointer
 	return item_list.get_item_text(item_list.get_selected_items()[0]).ends_with("(*)")
-
-
-#func get_text_by_coordinates(from: Vector2i, to: Vector2i) -> String:
-	##if from.y == to.y:
-		##return get_line(from.y).substr(from.x, to.x-from.x)
-	#
-	#var result: String = get_line(from.y).substr(from.x)
-	#for line_i in range(from.y+1, to.y):
-		#result += "\n" + get_line(line_i)
-	#return result + "\n" + get_line(to.y).left(to.x)
 
 
 func _fetch_node(parent: Node, type: String) -> Node:
@@ -538,26 +495,25 @@ func _on_text_changed() -> void:
 
 
 func _on_color_picker_color_changed(color: Color) -> void:
-	print("Color changed")
 	var hex: String = color.to_html(color.a8 != 255)
+	
 	for caret in get_caret_count():
 		var line_i: int = get_caret_line(caret)
 		var line: String = get_line(line_i)
 		var column_i: int = get_caret_column(caret)
-		## [color=][/color]
+		
 		if line[column_i] != "]" and line[column_i] != " ":
 			var to_scan: String = line.substr(column_i)
-			print(to_scan)
 			var end: int = to_scan.find("]")
-			print(end)
+			
 			if end == -1:
 				end = to_scan.find(" ")
 			else:
 				var other: int = to_scan.find(" ")
 				if other != -1 and other < end:
 					end = other
-			print(line.left(column_i))
-			print(to_scan.substr(end))
+			
 			set_line(line_i, line.left(column_i) + to_scan.substr(end))
+		
 		insert_text_at_caret(hex, caret)
 		set_caret_column(column_i)
