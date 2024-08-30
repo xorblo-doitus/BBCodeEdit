@@ -2,4 +2,3 @@
 - [x] Fix `|` showing up in display text
 - [ ] Cleanup code
 - [ ] Fix text typed to bring command not being erased on completion
-- [ ] Make that ui_validation on color picker work (without preventing ui_validate from working in RGB/HSV field)
