@@ -462,6 +462,7 @@ func _on_text_changed() -> void:
 	var line_i: int = get_caret_line()
 	var column_i: int = get_caret_column()
 	var line: String = get_line(get_caret_line())
+	# FIXME res://addons/bbcode_edit/bbcode_edit.gd:465 - Out of bounds get index '-1' (on base: 'String')
 	if (
 		is_in_comment(line_i, column_i) == -1
 		and is_in_string(line_i, column_i) == -1
