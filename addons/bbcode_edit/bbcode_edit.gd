@@ -250,7 +250,7 @@ func add_completion_options() -> void:
 	for i in completions.size():
 		add_code_completion_option(
 			CodeEdit.KIND_PLAIN_TEXT,
-			displays[i],
+			displays[i].replace("|", ""),
 			completions[i],
 			get_theme_color(&"font_color"),
 			BBCODE_COMPLETION_ICON,
