@@ -1,6 +1,7 @@
 @tool
 extends CodeEdit
 
+const EditorInterfaceScraper = preload("res://addons/bbcode_edit/editor_interface_scraper.gd")
 
 const BBCODE_COMPLETION_ICON = preload("res://addons/bbcode_edit/bbcode_completion_icon.svg")
 const COLOR_PICKER_CONTAINER_PATH = ^"_BBCodeEditColorPicker"
@@ -446,40 +447,15 @@ func _gui_input(event: InputEvent) -> void:
 				print_rich("[color=orange]Never changed[/color]")
 				text = text
 				EditorInterface.save_all_scenes()
-			elif is_unsaved():
+			elif EditorInterfaceScraper.is_current_script_unsaved():
 				print_rich("[color=orange]Is unsaved[/color]")
 				EditorInterface.save_all_scenes()
-		elif is_unsaved():
+		elif EditorInterfaceScraper.is_current_script_unsaved():
 			print_rich("[color=orange]Is unsaved[/color]")
 			EditorInterface.save_all_scenes()
 		print(class_name_)
 		
 		EditorInterface.get_script_editor().get_current_editor().go_to_help.emit.call_deferred("class_name:"+class_name_)
-
-
-## Scrap the Editor tree to find if it's unsaved.
-func is_unsaved() -> bool:
-	# Reference path: $"../../../../../../@VSplitContainer@9820/@VBoxContainer@9821/@ItemList@9824"
-	var pointer: Node = $"../../../../../.."
-	
-	if pointer == null:
-		return false
-	
-	for node_type: String in ["VSplitContainer", "VBoxContainer", "ItemList"]:
-		pointer = _fetch_node(pointer, node_type)
-		if pointer == null:
-			return false
-	
-	var item_list: ItemList = pointer
-	return item_list.get_item_text(item_list.get_selected_items()[0]).ends_with("(*)")
-
-
-func _fetch_node(parent: Node, type: String) -> Node:
-	type = "@" + type
-	for child in parent.get_children():
-		if child.name.begins_with(type):
-			return child
-	return null
 
 
 func _on_text_changed() -> void:
