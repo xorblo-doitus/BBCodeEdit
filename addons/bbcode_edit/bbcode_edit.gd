@@ -1,7 +1,6 @@
 @tool
 extends CodeEdit
 
-const EditorInterfaceScraper = preload("res://addons/bbcode_edit/editor_interface_scraper.gd")
 
 const BBCODE_COMPLETION_ICON = preload("res://addons/bbcode_edit/bbcode_completion_icon.svg")
 const COLOR_PICKER_CONTAINER_PATH = ^"_BBCodeEditColorPicker"
@@ -430,32 +429,6 @@ func _gui_input(event: InputEvent) -> void:
 	if has_node(COLOR_PICKER_CONTAINER_PATH):
 		if (event is InputEventKey or event is InputEventMouseButton) and event.is_pressed():
 			get_node(COLOR_PICKER_CONTAINER_PATH).free()
-	
-	if InputMap.event_is_action(event, "bbcode_edit/editor/open_current_file_documentation", true):
-		# TODO find a workaround for the appearance delay of (*) to check unsaved status.
-		print(event.is_pressed())
-		print_rich("[color=green]OPEN[/color]")
-		var current_script: Script = EditorInterface.get_script_editor().get_current_script()
-		
-		var class_name_: String = current_script.get_global_name()
-		if class_name_ == "":
-			print_rich("[color=orange]Unamed[/color]")
-			class_name_ = '"' + current_script.resource_path.trim_prefix("res://") + '"'
-			var bbcode_edit_saved_once: PackedStringArray = EditorInterface.get_meta(&"bbcode_edit_saved_once", PackedStringArray())
-			if not class_name_ in bbcode_edit_saved_once:
-				bbcode_edit_saved_once.append(class_name_)
-				print_rich("[color=orange]Never changed[/color]")
-				text = text
-				EditorInterface.save_all_scenes()
-			elif EditorInterfaceScraper.is_current_script_unsaved():
-				print_rich("[color=orange]Is unsaved[/color]")
-				EditorInterface.save_all_scenes()
-		elif EditorInterfaceScraper.is_current_script_unsaved():
-			print_rich("[color=orange]Is unsaved[/color]")
-			EditorInterface.save_all_scenes()
-		print(class_name_)
-		
-		EditorInterface.get_script_editor().get_current_editor().go_to_help.emit.call_deferred("class_name:"+class_name_)
 
 
 func _on_text_changed() -> void:

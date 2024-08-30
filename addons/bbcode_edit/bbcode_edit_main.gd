@@ -2,8 +2,8 @@
 extends EditorPlugin
 
 
-## Type of [url]res://addons/bbcode_edit/bbcode_edit.gd[/url]
 const BBCodeEdit: GDScript = preload("res://addons/bbcode_edit/bbcode_edit.gd")
+const EditorInterfaceScraper = preload("res://addons/bbcode_edit/editor_interface_scraper.gd")
 
 
 const ADDON_NAME = "BBCode Editor"
@@ -101,3 +101,41 @@ func add_bbcode_handling(code_edit: CodeEdit) -> void:
 	# TODO MAYBE implement automatic script inheritence if script is already overriden by another addon 
 	code_edit.set_meta(&"never_changed", true)
 	code_edit.set_script(BBCodeEdit)
+
+
+## [b]WARING:[/b] not fully implemented for non-current script
+func open_doc(script: Script, code_edit: CodeEdit = null) -> void:
+	var class_name_: String = script.get_global_name()
+	
+	if class_name_ == "":
+		class_name_ = '"' + script.resource_path.trim_prefix("res://") + '"'
+		var bbcode_edit_saved_once: PackedStringArray = EditorInterface.get_meta(&"bbcode_edit_saved_once", PackedStringArray())
+		if code_edit and class_name_ not in bbcode_edit_saved_once:
+			bbcode_edit_saved_once.append(class_name_)
+			print_rich("[color=orange]Never changed[/color]")
+			code_edit.text = code_edit.text
+			EditorInterface.save_all_scenes()
+		elif EditorInterfaceScraper.is_current_script_unsaved():
+			# TODO ↑ Fix this of non-current script
+			print_rich("[color=orange]Is unsaved[/color]")
+			EditorInterface.save_all_scenes()
+	
+	elif EditorInterfaceScraper.is_current_script_unsaved():
+		print_rich("[color=orange]Is unsaved[/color]")
+		EditorInterface.save_all_scenes()
+	print(class_name_)
+	
+	EditorInterface.get_script_editor().get_current_editor().go_to_help.emit.call_deferred("class_name:"+class_name_)
+
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if InputMap.event_is_action(event, "bbcode_edit/editor/open_current_file_documentation", true):
+		# TODO find a workaround for the appearance delay of (*) to check unsaved status.
+		var current_editor := EditorInterface.get_script_editor().get_current_editor()
+		if current_editor == null:
+			return
+		
+		var code_edit := current_editor.get_base_editor()
+		if code_edit is CodeEdit:
+			open_doc(EditorInterface.get_script_editor().get_current_script(), code_edit)
