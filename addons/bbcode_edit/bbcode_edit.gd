@@ -28,7 +28,8 @@ const TAGS_UNIVERSAL: Array[String] = [
 	"url=https://|][/url",
 	"center]|[/center",
 ]
-const TAGS_DOC_COMMENT: Array[String] = [
+const TAGS_DOC_COMMENT_REFERENCE: Array[String] = [
+	"param |",
 	"annotation |",
 	"constant |",
 	"enum |",
@@ -38,7 +39,8 @@ const TAGS_DOC_COMMENT: Array[String] = [
 	"operator |",
 	"signal |",
 	"theme_item |",
-	"param |",
+]
+const TAGS_DOC_COMMENT_FORMATTING: Array[String] = [
 	"codeblock]|[/codeblock",
 	"br||",
 	"kbd]|[/kbd",
@@ -247,8 +249,10 @@ func add_completion_options() -> void:
 	if check_other_completions(to_test):
 		return
 	
+	var font_color: Color = get_theme_color(&"font_color")
+	
 	# TODO only propose valid tags
-	var completions: Array[String] = TAGS_UNIVERSAL + TAGS_DOC_COMMENT + TAGS_RICH_TEXT_LABEL
+	var completions: Array[String] = TAGS_UNIVERSAL + TAGS_DOC_COMMENT_FORMATTING + TAGS_RICH_TEXT_LABEL
 	var displays: Array[String] = []
 	displays.assign(completions.map(bracket))
 	
@@ -259,8 +263,24 @@ func add_completion_options() -> void:
 			CodeEdit.KIND_PLAIN_TEXT,
 			displays[i].replace("|", ""),
 			completions[i],
-			get_theme_color(&"font_color"),
+			font_color,
 			BBCODE_COMPLETION_ICON,
+		)
+	
+	var reference_completions: Array[String] = TAGS_DOC_COMMENT_REFERENCE
+	var reference_displays: Array[String] = []
+	for completion in reference_completions:
+		reference_displays.append(bracket(completion.trim_suffix("|") + "Class.name"))
+	reference_displays[0] = "[param name]"
+	
+	var reference_icon: Texture2D = get_reference_icon()
+	for i in reference_completions.size():
+		add_code_completion_option(
+			CodeEdit.KIND_PLAIN_TEXT,
+			reference_displays[i].replace("|", ""),
+			reference_completions[i],
+			font_color,
+			reference_icon,
 		)
 	
 	update_code_completion_options(true) # NEEDED so that `[` triggers popup
@@ -338,6 +358,10 @@ func get_color_icon() -> Texture2D:
 	return EditorInterface.get_base_control().get_theme_icon("Color", "EditorIcons")
 
 
+func get_reference_icon() -> Texture2D:
+	return EditorInterface.get_base_control().get_theme_icon("Help", "EditorIcons")
+
+
 func add_color_completions() -> void:
 	var icon = get_color_icon()
 	for color in COLORS:
@@ -378,7 +402,10 @@ func _confirm_code_completion(replace: bool = false) -> void:
 		return
 	
 	begin_complex_operation()
-	var is_bbcode: bool = selected_completion["icon"] == BBCODE_COMPLETION_ICON
+	var is_bbcode: bool = (
+		selected_completion["icon"] == BBCODE_COMPLETION_ICON
+		or selected_completion["icon"] == get_reference_icon()
+	)
 	
 	var remove_redondant_quote_and_bracket: bool = false
 	
