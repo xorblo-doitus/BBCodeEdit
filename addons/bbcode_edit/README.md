@@ -11,8 +11,10 @@ A Godot addon that help editing BBCode in CodeEdit nodes, especially useful for 
   - [ ] All BBCode tags (See [Godot Reference](https://docs.godotengine.org/en/4.3/tutorials/ui/bbcode_in_richtextlabel.html#reference))
   - [ ] Documentation comments:
     - [x] formating tags
-    - [ ] referencing tag
+    - [x] referencing tag
     - [ ] `@` tags
+    - [ ] Snipets:
+      - [ ] **Note:**, **Warning:**...
 - [ ] Classify tags accepted in documentation comments according to [Godot Reference](https://docs.godotengine.org/en/4.3/tutorials/scripting/gdscript/gdscript_documentation_comments.html#bbcode-and-class-reference)
 - [ ] Advanced completions:
   - [x] Color:

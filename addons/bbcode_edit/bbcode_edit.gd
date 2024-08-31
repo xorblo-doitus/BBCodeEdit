@@ -29,6 +29,16 @@ const TAGS_UNIVERSAL: Array[String] = [
 	"center]|[/center",
 ]
 const TAGS_DOC_COMMENT: Array[String] = [
+	"annotation |",
+	"constant |",
+	"enum |",
+	"member |",
+	"method |",
+	"constructor |",
+	"operator |",
+	"signal |",
+	"theme_item |",
+	"param |",
 	"codeblock]|[/codeblock",
 	"br||",
 	"kbd]|[/kbd",

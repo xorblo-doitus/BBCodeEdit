@@ -1,4 +1,4 @@
 - [x] Find a way to complete numreic values for color.
 - [x] Fix `|` showing up in display text
-- [ ] Cleanup code
+- [x] Cleanup code
 - [ ] Fix text typed to bring command not being erased on completion
