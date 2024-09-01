@@ -187,16 +187,6 @@ func add_hex_color(hex: String, include_prefix: bool = false) -> void:
 	)
 
 
-#static func get_editor_feature_profile() -> EditorFeatureProfile:
-	#var profile = EditorFeatureProfile.new()
-	#var error: Error = profile.load_from_file(
-		#EditorInterface.get_editor_paths().get_config_dir().path_join("feature_profiles").path_join(EditorInterface.get_current_feature_profile() + ".profile")
-	#)
-	#if error:
-		#push_error("Can't find feature profile: ", error_string(error))
-	#return profile
-
-
 func add_color_completions() -> void:
 	var icon = Scraper.get_color_icon()
 	for color in Completions.COLORS:
