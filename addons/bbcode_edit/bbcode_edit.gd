@@ -38,14 +38,12 @@ func add_completion_options() -> void:
 		return
 	print_rich("[color=red]in bbcode completion[/color]")
 	
-	var to_test: String
-	
-	to_test = trim_doc_comment_start(line.left(column_i))
+	var to_test: String = trim_doc_comment_start(line.left(column_i))
 	var prev_line_i: int = line_i - 1
 	var prev_line: String = get_line(prev_line_i).strip_edges(true, false)
 	while prev_line.begins_with("##"):
 		to_test = prev_line.trim_prefix("##").strip_edges() + " " + to_test
-		prev_line_i += 1
+		prev_line_i -= 1
 		prev_line = get_line(prev_line_i).strip_edges(true, false)
 	
 	to_test = to_test.split("]")[-1]#.split("=")[-1]
