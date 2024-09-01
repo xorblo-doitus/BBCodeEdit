@@ -12,198 +12,6 @@ const COMMAND_PREFIX_CHAR = "\u0001"
 const CLASS_PREFIX_CHAR = "\uffff"
 const _COMMAND_COLOR_PICKER = "color_picker"
 
-#region Completion options
-# TODO add all tags and classify them between Documentation Only, Documentation Forbidden, Universal
-const TAGS_UNIVERSAL: Array[String] = [
-	"b]|[/b",
-	"u]|[/u",
-	"i]|[/i",
-	"s]|[/s",
-	"code]|[/code",
-	"color=|][/color",
-	"lb||",
-	"rb||",
-	"font=|][/font",
-	"img]res://|[/img",
-	"img width=| height=]res://[/img",
-	"url]|[/url",
-	"url=https://|][/url",
-	"center]|[/center",
-]
-const TAGS_DOC_COMMENT_REFERENCE: Array[String] = [
-	"param |",
-	"annotation |",
-	"constant |",
-	"enum |",
-	"member |",
-	"method |",
-	"constructor |",
-	"operator |",
-	"signal |",
-	"theme_item |",
-]
-const TAGS_DOC_COMMENT_FORMATTING: Array[String] = [
-	"codeblock]|[/codeblock",
-	"br||",
-	"kbd]|[/kbd",
-]
-# TODO add all tags
-const TAGS_RICH_TEXT_LABEL: Array[String] = [
-	# TODO complete with all options
-	"font name=| size=][/font]",
-	'url={"|": }][/url',
-]
-
-const COLORS: Array[StringName] = [
-	"alice_blue",
-	"antique_white",
-	"aqua",
-	"aquamarine",
-	"azure",
-	"beige",
-	"bisque",
-	"black",
-	"blanched_almond",
-	"blue",
-	"blue_violet",
-	"brown",
-	"burlywood",
-	"cadet_blue",
-	"chartreuse",
-	"chocolate",
-	"coral",
-	"cornflower_blue",
-	"cornsilk",
-	"crimson",
-	"cyan",
-	"dark_blue",
-	"dark_cyan",
-	"dark_goldenrod",
-	"dark_gray",
-	"dark_green",
-	"dark_khaki",
-	"dark_magenta",
-	"dark_olive_green",
-	"dark_orange",
-	"dark_orchid",
-	"dark_red",
-	"dark_salmon",
-	"dark_sea_green",
-	"dark_slate_blue",
-	"dark_slate_gray",
-	"dark_turquoise",
-	"dark_violet",
-	"deep_pink",
-	"deep_sky_blue",
-	"dim_gray",
-	"dodger_blue",
-	"firebrick",
-	"floral_white",
-	"forest_green",
-	"fuchsia",
-	"gainsboro",
-	"ghost_white",
-	"gold",
-	"goldenrod",
-	"gray",
-	"green",
-	"green_yellow",
-	"honeydew",
-	"hot_pink",
-	"indian_red",
-	"indigo",
-	"ivory",
-	"khaki",
-	"lavender",
-	"lavender_blush",
-	"lawn_green",
-	"lemon_chiffon",
-	"light_blue",
-	"light_coral",
-	"light_cyan",
-	"light_goldenrod",
-	"light_gray",
-	"light_green",
-	"light_pink",
-	"light_salmon",
-	"light_sea_green",
-	"light_sky_blue",
-	"light_slate_gray",
-	"light_steel_blue",
-	"light_yellow",
-	"lime",
-	"lime_green",
-	"linen",
-	"magenta",
-	"maroon",
-	"medium_aquamarine",
-	"medium_blue",
-	"medium_orchid",
-	"medium_purple",
-	"medium_sea_green",
-	"medium_slate_blue",
-	"medium_spring_green",
-	"medium_turquoise",
-	"medium_violet_red",
-	"midnight_blue",
-	"mint_cream",
-	"misty_rose",
-	"moccasin",
-	"navajo_white",
-	"navy_blue",
-	"old_lace",
-	"olive",
-	"olive_drab",
-	"orange",
-	"orange_red",
-	"orchid",
-	"pale_goldenrod",
-	"pale_green",
-	"pale_turquoise",
-	"pale_violet_red",
-	"papaya_whip",
-	"peach_puff",
-	"peru",
-	"pink",
-	"plum",
-	"powder_blue",
-	"purple",
-	"rebecca_purple",
-	"red",
-	"rosy_brown",
-	"royal_blue",
-	"saddle_brown",
-	"salmon",
-	"sandy_brown",
-	"sea_green",
-	"seashell",
-	"sienna",
-	"silver",
-	"sky_blue",
-	"slate_blue",
-	"slate_gray",
-	"snow",
-	"spring_green",
-	"steel_blue",
-	"tan",
-	"teal",
-	"thistle",
-	"tomato",
-	"transparent",
-	"turquoise",
-	"violet",
-	"web_gray",
-	"web_green",
-	"web_maroon",
-	"web_purple",
-	"wheat",
-	"white",
-	"white_smoke",
-	"yellow",
-	"yellow_green",
-]
-#endregion
-
 
 func _init() -> void:
 	set_process_input(true)
@@ -254,7 +62,11 @@ func add_completion_options() -> void:
 	var font_color: Color = get_theme_color(&"font_color")
 	
 	# TODO only propose valid tags
-	var completions: Array[String] = TAGS_UNIVERSAL + TAGS_DOC_COMMENT_FORMATTING + TAGS_RICH_TEXT_LABEL
+	var completions: Array[String] = (
+		Completions.TAGS_UNIVERSAL
+		+ Completions.TAGS_DOC_COMMENT_FORMATTING
+		+ Completions.TAGS_RICH_TEXT_LABEL
+	)
 	var displays: Array[String] = []
 	displays.assign(completions.map(bracket))
 	
@@ -269,7 +81,7 @@ func add_completion_options() -> void:
 			BBCODE_COMPLETION_ICON,
 		)
 	
-	var reference_completions: Array[String] = TAGS_DOC_COMMENT_REFERENCE
+	var reference_completions: Array[String] = Completions.TAGS_DOC_COMMENT_REFERENCE
 	var reference_displays: Array[String] = []
 	for completion in reference_completions:
 		reference_displays.append(bracket(completion.trim_suffix("|") + "Class.name"))
@@ -387,7 +199,7 @@ func add_hex_color(hex: String, include_prefix: bool = false) -> void:
 
 func add_color_completions() -> void:
 	var icon = Scraper.get_color_icon()
-	for color in COLORS:
+	for color in Completions.COLORS:
 		add_code_completion_option(
 			CodeEdit.KIND_PLAIN_TEXT,
 			color,
