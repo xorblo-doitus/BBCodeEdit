@@ -3,7 +3,7 @@ extends EditorPlugin
 
 
 const BBCodeEdit: GDScript = preload("res://addons/bbcode_edit/bbcode_edit.gd")
-const EditorInterfaceScraper = preload("res://addons/bbcode_edit/editor_interface_scraper.gd")
+const Scraper = preload("res://addons/bbcode_edit/editor_interface_scraper.gd")
 
 
 const ADDON_NAME = "BBCode Editor"
@@ -115,12 +115,12 @@ func open_doc(script: Script, code_edit: CodeEdit = null) -> void:
 			print_rich("[color=orange]Never changed[/color]")
 			code_edit.text = code_edit.text
 			EditorInterface.save_all_scenes()
-		elif EditorInterfaceScraper.is_current_script_unsaved():
+		elif Scraper.is_current_script_unsaved():
 			# TODO ↑ Fix this of non-current script
 			print_rich("[color=orange]Is unsaved[/color]")
 			EditorInterface.save_all_scenes()
 	
-	elif EditorInterfaceScraper.is_current_script_unsaved():
+	elif Scraper.is_current_script_unsaved():
 		print_rich("[color=orange]Is unsaved[/color]")
 		EditorInterface.save_all_scenes()
 	print(class_name_)

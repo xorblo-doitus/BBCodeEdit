@@ -1,6 +1,7 @@
 @tool
 extends CodeEdit
 
+const Completions = preload("res://addons/bbcode_edit/completions_db/completions.gd")
 const Scraper = preload("res://addons/bbcode_edit/editor_interface_scraper.gd")
 
 const BBCODE_COMPLETION_ICON = preload("res://addons/bbcode_edit/bbcode_completion_icon.svg")
@@ -8,8 +9,8 @@ const COLOR_PICKER_CONTAINER_PATH = ^"_BBCodeEditColorPicker"
 const COLOR_PICKER_PATH = ^"_BBCodeEditColorPicker/ColorPicker"
 
 const COMMAND_PREFIX_CHAR = "\u0001"
+const CLASS_PREFIX_CHAR = "\uffff"
 const _COMMAND_COLOR_PICKER = "color_picker"
-
 
 #region Completion options
 # TODO add all tags and classify them between Documentation Only, Documentation Forbidden, Universal
@@ -284,6 +285,25 @@ func add_completion_options() -> void:
 			reference_icon,
 		)
 	
+	#print(len(ClassDB.get_class_list()))
+	#var editor_feature_profile := get_editor_feature_profile()
+	#print(editor_feature_profile.is_class_disabled(&"AnimationNodeBlendSpace2DEditor"))
+	#print(editor_feature_profile.is_class_editor_disabled(&"AnimationNodeBlendSpace2DEditor"))
+	#print(not ClassDB.is_class_enabled(&"AnimationNodeBlendSpace2DEditor"))
+	#for class_name_ in Engine.get_script_language(0):
+	var class_completions := Completions.get_class_completions()
+	for i in len(class_completions.names):
+		#if editor_feature_profile.is_class_disabled(class_name_):
+			#continue
+		var name_: String = class_completions.names[i]
+		add_code_completion_option(
+			CodeEdit.KIND_PLAIN_TEXT,
+			CLASS_PREFIX_CHAR + "[" + name_,
+			name_ + "||",
+			font_color,
+			class_completions.icons[i],
+		)
+	
 	update_code_completion_options(true) # NEEDED so that `[` triggers popup
 
 
@@ -355,12 +375,14 @@ func add_hex_color(hex: String, include_prefix: bool = false) -> void:
 	)
 
 
-func get_color_icon() -> Texture2D:
-	return EditorInterface.get_base_control().get_theme_icon("Color", "EditorIcons")
-
-
-func get_reference_icon() -> Texture2D:
-	return EditorInterface.get_base_control().get_theme_icon("Help", "EditorIcons")
+#static func get_editor_feature_profile() -> EditorFeatureProfile:
+	#var profile = EditorFeatureProfile.new()
+	#var error: Error = profile.load_from_file(
+		#EditorInterface.get_editor_paths().get_config_dir().path_join("feature_profiles").path_join(EditorInterface.get_current_feature_profile() + ".profile")
+	#)
+	#if error:
+		#push_error("Can't find feature profile: ", error_string(error))
+	#return profile
 
 
 func add_color_completions() -> void:
@@ -410,7 +432,7 @@ func _confirm_code_completion(replace: bool = false) -> void:
 	
 	var remove_redondant_quote_and_bracket: bool = false
 	
-	if is_bbcode:
+	if is_bbcode or selected_completion["display_text"][0] == CLASS_PREFIX_CHAR:
 		print_rich("[color=red]BBCode is true[/color]")
 		for caret in get_caret_count():
 			var line: String = get_line(get_caret_line(caret)) + " " # Add space so that column is in range
@@ -428,8 +450,7 @@ func _confirm_code_completion(replace: bool = false) -> void:
 	set_script(null)
 	super.confirm_code_completion(replace)
 	set_script(script)
-	
-	if is_bbcode:
+	if is_bbcode or selected_completion["display_text"][0] == CLASS_PREFIX_CHAR:
 		for caret in get_caret_count():
 			var line_i: int = get_caret_line(caret)
 			var line: String = get_line(line_i)
@@ -459,7 +480,7 @@ func _confirm_code_completion(replace: bool = false) -> void:
 	
 	end_complex_operation()
 	
-	if is_bbcode:
+	if is_bbcode or selected_completion["display_text"][0] == CLASS_PREFIX_CHAR:
 		request_code_completion()
 
 
