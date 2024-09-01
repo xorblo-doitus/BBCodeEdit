@@ -4,6 +4,28 @@ extends Object
 ## This singleton has utility methods to scrap the Editor's interface
 
 
+
+static func get_icon(icon: StringName) -> Texture2D:
+	return EditorInterface.get_base_control().get_theme_icon(icon, &"EditorIcons")
+
+
+static func get_color_icon() -> Texture2D:
+	return get_icon(&"Color")
+
+
+static func get_reference_icon() -> Texture2D:
+	return get_icon(&"Help")
+
+
+static func get_class_icon(class_name_: StringName) -> Texture2D:
+	var result: Texture2D = get_icon(class_name_)
+	var file_broken: Texture2D = get_icon(&"za86e81czxe1s89az6ee7s1") # Random
+	while result == file_broken and class_name_ != &"":
+		class_name_ = ClassDB.get_parent_class(class_name_)
+		result = get_icon(class_name_)
+	return result
+
+
 ## Scrap the Editor tree to find if it's unsaved.
 static func is_current_script_unsaved() -> bool:
 	# Reference path: $"../../../../../../@VSplitContainer@9820/@VBoxContainer@9821/@ItemList@9824"

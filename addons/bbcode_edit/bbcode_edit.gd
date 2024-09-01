@@ -1,6 +1,7 @@
 @tool
 extends CodeEdit
 
+const Scraper = preload("res://addons/bbcode_edit/editor_interface_scraper.gd")
 
 const BBCODE_COMPLETION_ICON = preload("res://addons/bbcode_edit/bbcode_completion_icon.svg")
 const COLOR_PICKER_CONTAINER_PATH = ^"_BBCodeEditColorPicker"
@@ -273,7 +274,7 @@ func add_completion_options() -> void:
 		reference_displays.append(bracket(completion.trim_suffix("|") + "Class.name"))
 	reference_displays[0] = "[param name]"
 	
-	var reference_icon: Texture2D = get_reference_icon()
+	var reference_icon: Texture2D = Scraper.get_reference_icon()
 	for i in reference_completions.size():
 		add_code_completion_option(
 			CodeEdit.KIND_PLAIN_TEXT,
@@ -349,7 +350,7 @@ func add_hex_color(hex: String, include_prefix: bool = false) -> void:
 		HEX_PREFIX + hex + " ",
 		HEX_PREFIX + hex if include_prefix else hex,
 		get_theme_color(&"font_color"),
-		get_color_icon(),
+		Scraper.get_color_icon(),
 		Color.html(hex),
 	)
 
@@ -363,7 +364,7 @@ func get_reference_icon() -> Texture2D:
 
 
 func add_color_completions() -> void:
-	var icon = get_color_icon()
+	var icon = Scraper.get_color_icon()
 	for color in COLORS:
 		add_code_completion_option(
 			CodeEdit.KIND_PLAIN_TEXT,
@@ -404,7 +405,7 @@ func _confirm_code_completion(replace: bool = false) -> void:
 	begin_complex_operation()
 	var is_bbcode: bool = (
 		selected_completion["icon"] == BBCODE_COMPLETION_ICON
-		or selected_completion["icon"] == get_reference_icon()
+		or selected_completion["icon"] == Scraper.get_reference_icon()
 	)
 	
 	var remove_redondant_quote_and_bracket: bool = false
@@ -440,7 +441,7 @@ func _confirm_code_completion(replace: bool = false) -> void:
 				pipe_end += 1
 			set_line(line_i, line.left(first_pipe) + line.substr(pipe_end))
 			set_caret_column(pipe_end-1, false, caret)
-	elif selected_completion["icon"] == get_color_icon():
+	elif selected_completion["icon"] == Scraper.get_color_icon():
 		var line_i: int = get_caret_line()
 		var line: String = get_line(line_i)
 		var column: int = get_caret_column()
