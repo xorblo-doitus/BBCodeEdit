@@ -97,20 +97,12 @@ func add_completion_options() -> void:
 			reference_icon,
 		)
 	
-	#print(len(ClassDB.get_class_list()))
-	#var editor_feature_profile := get_editor_feature_profile()
-	#print(editor_feature_profile.is_class_disabled(&"AnimationNodeBlendSpace2DEditor"))
-	#print(editor_feature_profile.is_class_editor_disabled(&"AnimationNodeBlendSpace2DEditor"))
-	#print(not ClassDB.is_class_enabled(&"AnimationNodeBlendSpace2DEditor"))
-	#for class_name_ in Engine.get_script_language(0):
 	var class_completions := Completions.get_class_completions()
 	for i in len(class_completions.names):
-		#if editor_feature_profile.is_class_disabled(class_name_):
-			#continue
 		var name_: String = class_completions.names[i]
 		add_code_completion_option(
 			CodeEdit.KIND_PLAIN_TEXT,
-			CLASS_PREFIX_CHAR + "[" + name_,
+			CLASS_PREFIX_CHAR + "[" + name_ + "]",
 			name_ + "||",
 			font_color,
 			class_completions.icons[i],
