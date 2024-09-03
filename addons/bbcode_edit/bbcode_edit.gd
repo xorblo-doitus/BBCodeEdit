@@ -187,13 +187,15 @@ func check_parameter_completions(to_test: String, describes_i: int, describes: S
 				var param_parts := part.split(":", true, 1)
 				var parameter: String = param_parts[0].strip_edges()
 				
-				print(parameter)
+				print(param_parts)
 				add_code_completion_option(
 					CodeEdit.KIND_PLAIN_TEXT,
-					parameter,
-					parameter,
+					PARAMTER_PREFIX_CHAR + parameter,
+					parameter + "||",
 					get_theme_color(&"font_color"),
-					Scraper.get_icon(&"Variant") if param_parts.size() == 1 else Scraper.try_get_icon(param_parts[1].strip_edges(), &"Variant")
+					Scraper.get_icon(&"Variant")
+					if param_parts.size() == 1 else
+					Scraper.try_get_icon(param_parts[1].split("=", true, 1)[0].strip_edges(), &"Variant")
 				)
 			
 			return true
