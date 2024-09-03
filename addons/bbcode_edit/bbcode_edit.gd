@@ -11,6 +11,7 @@ const COLOR_PICKER_PATH = ^"_BBCodeEditColorPicker/ColorPicker"
 const MALFORMED = "MALFORMED"
 const COMMAND_PREFIX_CHAR = "\u0001"
 const CLASS_PREFIX_CHAR = "\uffff"
+const PARAMTER_PREFIX_CHAR = "\ufffe"
 const _COMMAND_COLOR_PICKER = "color_picker"
 
 static var REGEX_PARENTHESES = RegEx.create_from_string(r"\(([^)]+)\)")
@@ -270,11 +271,12 @@ func _confirm_code_completion(replace: bool = false) -> void:
 	var is_bbcode: bool = (
 		selected_completion["icon"] == BBCODE_COMPLETION_ICON
 		or selected_completion["icon"] == Scraper.get_reference_icon()
+		or selected_completion["display_text"][0] in [CLASS_PREFIX_CHAR, PARAMTER_PREFIX_CHAR]
 	)
 	
 	var remove_redondant_quote_and_bracket: bool = false
 	
-	if is_bbcode or selected_completion["display_text"][0] == CLASS_PREFIX_CHAR:
+	if is_bbcode:
 		print_rich("[color=red]BBCode is true[/color]")
 		for caret in get_caret_count():
 			var line: String = get_line(get_caret_line(caret)) + " " # Add space so that column is in range
@@ -292,7 +294,7 @@ func _confirm_code_completion(replace: bool = false) -> void:
 	set_script(null)
 	super.confirm_code_completion(replace)
 	set_script(script)
-	if is_bbcode or selected_completion["display_text"][0] == CLASS_PREFIX_CHAR:
+	if is_bbcode:
 		for caret in get_caret_count():
 			var line_i: int = get_caret_line(caret)
 			var line: String = get_line(line_i)
@@ -322,7 +324,7 @@ func _confirm_code_completion(replace: bool = false) -> void:
 	
 	end_complex_operation()
 	
-	if is_bbcode or selected_completion["display_text"][0] == CLASS_PREFIX_CHAR:
+	if is_bbcode:
 		request_code_completion()
 
 
