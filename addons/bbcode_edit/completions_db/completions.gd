@@ -25,7 +25,6 @@ const TAGS_UNIVERSAL: Array[String] = [
 	"center]|[/center",
 ]
 const TAGS_DOC_COMMENT_REFERENCE: Array[String] = [
-	"param |",
 	"annotation |",
 	"constant |",
 	"enum |",

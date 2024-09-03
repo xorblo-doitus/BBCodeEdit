@@ -8,9 +8,12 @@ const BBCODE_COMPLETION_ICON = preload("res://addons/bbcode_edit/bbcode_completi
 const COLOR_PICKER_CONTAINER_PATH = ^"_BBCodeEditColorPicker"
 const COLOR_PICKER_PATH = ^"_BBCodeEditColorPicker/ColorPicker"
 
+const MALFORMED = "MALFORMED"
 const COMMAND_PREFIX_CHAR = "\u0001"
 const CLASS_PREFIX_CHAR = "\uffff"
 const _COMMAND_COLOR_PICKER = "color_picker"
+
+static var REGEX_PARENTHESES = RegEx.create_from_string(r"\(([^)]+)\)")
 
 
 func _init() -> void:
@@ -54,7 +57,12 @@ func add_completion_options() -> void:
 		update_code_completion_options(true)
 		return
 	
-	if check_other_completions(to_test):
+	var describes_i: int = line_i
+	while is_in_comment(describes_i) != -1:
+		describes_i += 1
+	var describes: String = get_line(describes_i)
+	
+	if check_parameter_completions(to_test, describes_i, describes):
 		return
 	
 	var font_color: Color = get_theme_color(&"font_color")
@@ -83,7 +91,6 @@ func add_completion_options() -> void:
 	var reference_displays: Array[String] = []
 	for completion in reference_completions:
 		reference_displays.append(bracket(completion.trim_suffix("|") + "Class.name"))
-	reference_displays[0] = "[param name]"
 	
 	var reference_icon: Texture2D = Scraper.get_reference_icon()
 	for i in reference_completions.size():
@@ -91,6 +98,15 @@ func add_completion_options() -> void:
 			CodeEdit.KIND_PLAIN_TEXT,
 			reference_displays[i].replace("|", ""),
 			reference_completions[i],
+			font_color,
+			reference_icon,
+		)
+	
+	if describes.begins_with("func "):
+		add_code_completion_option(
+			CodeEdit.KIND_PLAIN_TEXT,
+			"[param name]",
+			"param |",
 			font_color,
 			reference_icon,
 		)
@@ -117,7 +133,7 @@ func trim_doc_comment_start(line: String) -> String:
 	return line.strip_edges(true, false).trim_prefix("##").strip_edges(true, false)
 
 
-func check_other_completions(to_test: String) -> bool:
+func check_parameter_completions(to_test: String, describes_i: int, describes: String) -> bool:
 	to_test = to_test.split("[")[-1]
 	var parts: PackedStringArray = to_test.split(" ", false)
 	
@@ -127,7 +143,7 @@ func check_other_completions(to_test: String) -> bool:
 		# TODO MAYBE impleement sub parameter handling ? (e.g. [font otv="wght=200,wdth=400"])
 		var split: PackedStringArray = part.split("=", 1)
 		parameters.append(split[0])
-		values.append(split[1] if split.size() == 2 else "MALFORMED")
+		values.append(split[1] if split.size() == 2 else MALFORMED)
 	
 	print_rich("Parameters:[color=magenta] ", parameters)
 	print_rich("Values:[color=magenta] ", values)
@@ -150,10 +166,42 @@ func check_other_completions(to_test: String) -> bool:
 				add_color_completions()
 				return true
 	
+	match parameters[0]:
+		"param":
+			if not describes.begins_with("func "):
+				return false
+			
+			if ")" not in describes:
+				var next_line_i: int = describes_i + 1
+				var next_line: String = get_line(next_line_i)
+				while ")" not in next_line:
+					describes += next_line
+					next_line_i += 1
+					next_line = get_line(next_line_i)
+				describes += next_line
+			print_rich("Describes: [color=purple][code]", describes)
+			
+			for part in (
+				REGEX_PARENTHESES.search(describes).get_string().trim_prefix("(").trim_suffix(")").split(",")
+			):
+				var param_parts := part.split(":", true, 1)
+				var parameter: String = param_parts[0].strip_edges()
+				
+				print(parameter)
+				add_code_completion_option(
+					CodeEdit.KIND_PLAIN_TEXT,
+					parameter,
+					parameter,
+					get_theme_color(&"font_color"),
+					Scraper.get_icon(&"Variant") if param_parts.size() == 1 else Scraper.try_get_icon(param_parts[1].strip_edges(), &"Variant")
+				)
+			
+			return true
+	
 	return false
 
 
-func substr_clamped_start(str: String, from: int, len: int) -> String:
+func substr_clamped_start(string: String, from: int, len: int) -> String:
 	if from < 0:
 		if len != -1:
 			len += from
@@ -161,7 +209,7 @@ func substr_clamped_start(str: String, from: int, len: int) -> String:
 				len = 0
 		from = 0
 	
-	return str.substr(from, len)
+	return string.substr(from, len)
 
 
 const HEX_PREFIX = "0x"
@@ -318,3 +366,8 @@ func _on_color_picker_color_changed(color: Color) -> void:
 		
 		insert_text_at_caret(hex, caret)
 		set_caret_column(column_i)
+
+
+
+
+## Test poazek [a
