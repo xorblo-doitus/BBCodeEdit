@@ -17,6 +17,13 @@ static func get_reference_icon() -> Texture2D:
 	return get_icon(&"Help")
 
 
+static func try_get_icon(icon: StringName, fallback: StringName) -> Texture2D:
+	var result: Texture2D = get_icon(icon)
+	if result == get_icon(&"za86e81czxe1s89az6ee7s1"): # Random
+		return get_icon(fallback)
+	return result
+
+
 static func get_class_icon(class_name_: StringName) -> Texture2D:
 	var result: Texture2D = get_icon(class_name_)
 	var file_broken: Texture2D = get_icon(&"za86e81czxe1s89az6ee7s1") # Random
