@@ -149,6 +149,9 @@ func check_parameter_completions(to_test: String, describes_i: int, describes: S
 	print_rich("Parameters:[color=magenta] ", parameters)
 	print_rich("Values:[color=magenta] ", values)
 	
+	if parameters.is_empty():
+		return false
+	
 	if parameters.size() == 1 and values[0] != "MALFORMED":
 		var value: String = values[0]
 		match parameters[0]:
