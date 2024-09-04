@@ -2,3 +2,4 @@
 - [x] Fix `|` showing up in display text
 - [x] Cleanup code
 - [ ] Fix text typed to bring command not being erased on completion
+- [ ] Improve completion kind detection

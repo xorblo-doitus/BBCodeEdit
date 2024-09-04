@@ -11,7 +11,7 @@ const COLOR_PICKER_PATH = ^"_BBCodeEditColorPicker/ColorPicker"
 const MALFORMED = "MALFORMED"
 const COMMAND_PREFIX_CHAR = "\u0001"
 const CLASS_PREFIX_CHAR = "\uffff"
-const PARAMTER_PREFIX_CHAR = "\ufffe"
+const PARAMTER_CHAR = "\ufffe"
 const _COMMAND_COLOR_PICKER = "color_picker"
 
 static var REGEX_PARENTHESES = RegEx.create_from_string(r"\(([^)]+)\)")
@@ -106,7 +106,7 @@ func add_completion_options() -> void:
 	if describes.begins_with("func "):
 		add_code_completion_option(
 			CodeEdit.KIND_PLAIN_TEXT,
-			"[param name]",
+			"[param name]" + PARAMTER_CHAR,
 			"param |",
 			font_color,
 			reference_icon,
@@ -191,7 +191,7 @@ func check_parameter_completions(to_test: String, describes_i: int, describes: S
 				print(param_parts)
 				add_code_completion_option(
 					CodeEdit.KIND_PLAIN_TEXT,
-					PARAMTER_PREFIX_CHAR + parameter,
+					PARAMTER_CHAR + parameter,
 					parameter + "||",
 					get_theme_color(&"font_color"),
 					Scraper.get_icon(&"Variant")
@@ -199,6 +199,7 @@ func check_parameter_completions(to_test: String, describes_i: int, describes: S
 					Scraper.try_get_icon(param_parts[1].split("=", true, 1)[0].strip_edges(), &"Variant")
 				)
 			
+			update_code_completion_options(true)
 			return true
 	
 	return false
@@ -271,7 +272,8 @@ func _confirm_code_completion(replace: bool = false) -> void:
 	var is_bbcode: bool = (
 		selected_completion["icon"] == BBCODE_COMPLETION_ICON
 		or selected_completion["icon"] == Scraper.get_reference_icon()
-		or selected_completion["display_text"][0] in [CLASS_PREFIX_CHAR, PARAMTER_PREFIX_CHAR]
+		or selected_completion["display_text"][0] in [CLASS_PREFIX_CHAR, PARAMTER_CHAR]
+		or selected_completion["display_text"][-1] == PARAMTER_CHAR
 	)
 	
 	var remove_redondant_quote_and_bracket: bool = false
@@ -325,7 +327,13 @@ func _confirm_code_completion(replace: bool = false) -> void:
 	end_complex_operation()
 	
 	if is_bbcode:
-		request_code_completion()
+		if selected_completion["display_text"][-1] == PARAMTER_CHAR:
+			var prefixes := code_completion_prefixes
+			code_completion_prefixes += [" "]
+			request_code_completion()
+			code_completion_prefixes = prefixes
+		else:
+			request_code_completion()
 
 
 func _gui_input(event: InputEvent) -> void:
