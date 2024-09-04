@@ -1,6 +1,19 @@
 @tool
 extends CodeEdit
 
+
+enum CompletionKind {
+	IGNORE,
+	FORMATTING,
+	COLOR,
+	COMMAND,
+	CLASS_REFERENCE,
+	REFERENCE_START,
+	REFERENCE_END,
+	REFERENCING_TAG,
+}
+
+
 const Completions = preload("res://addons/bbcode_edit/completions_db/completions.gd")
 const Scraper = preload("res://addons/bbcode_edit/editor_interface_scraper.gd")
 
@@ -10,8 +23,9 @@ const COLOR_PICKER_PATH = ^"_BBCodeEditColorPicker/ColorPicker"
 
 const MALFORMED = "MALFORMED"
 const COMMAND_PREFIX_CHAR = "\u0001"
-const CLASS_PREFIX_CHAR = "\uffff"
-const PARAMTER_CHAR = "\ufffe"
+const CLASS_REFERENCE_PREFIX_CHAR = "\uffff"
+const REFERENCE_START_SUFFIX_CHAR = "\uffff"
+const REFERENCE_END_SUFFIX_CHAR = "\ufffe"
 const _COMMAND_COLOR_PICKER = "color_picker"
 
 static var REGEX_PARENTHESES = RegEx.create_from_string(r"\(([^)]+)\)")
@@ -106,7 +120,7 @@ func add_completion_options() -> void:
 	if describes.begins_with("func "):
 		add_code_completion_option(
 			CodeEdit.KIND_PLAIN_TEXT,
-			"[param name]" + PARAMTER_CHAR,
+			"[param name]",
 			"param |",
 			font_color,
 			reference_icon,
@@ -117,7 +131,7 @@ func add_completion_options() -> void:
 		var name_: String = class_completions.names[i]
 		add_code_completion_option(
 			CodeEdit.KIND_PLAIN_TEXT,
-			CLASS_PREFIX_CHAR + "[" + name_ + "]",
+			CLASS_REFERENCE_PREFIX_CHAR + "[" + name_ + "]",
 			name_ + "||",
 			font_color,
 			class_completions.icons[i],
@@ -191,10 +205,9 @@ func check_parameter_completions(to_test: String, describes_i: int, describes: S
 				var param_parts := part.split(":", true, 1)
 				var parameter: String = param_parts[0].strip_edges()
 				
-				print(param_parts)
 				add_code_completion_option(
 					CodeEdit.KIND_PLAIN_TEXT,
-					PARAMTER_CHAR + parameter,
+					parameter + REFERENCE_END_SUFFIX_CHAR,
 					parameter + "||",
 					get_theme_color(&"font_color"),
 					Scraper.get_icon(&"Variant")
@@ -256,7 +269,10 @@ func add_color_completions() -> void:
 
 func _confirm_code_completion(replace: bool = false) -> void:
 	var selected_completion: Dictionary = get_code_completion_option(get_code_completion_selected_index())
-	if selected_completion["display_text"][0] == COMMAND_PREFIX_CHAR:
+	var display_text: String = selected_completion["display_text"]
+	var prefix: String = display_text[0]
+	
+	if prefix == COMMAND_PREFIX_CHAR:
 		match selected_completion["insert_text"]:
 			_COMMAND_COLOR_PICKER:
 				if not has_node(^"BBCODE_EDIT_COLOR_PICKER"):
@@ -271,25 +287,21 @@ func _confirm_code_completion(replace: bool = false) -> void:
 		cancel_code_completion()
 		return
 	
-	begin_complex_operation()
-	var is_bbcode: bool = (
-		selected_completion["icon"] == BBCODE_COMPLETION_ICON
-		or selected_completion["icon"] == Scraper.get_reference_icon()
-		or selected_completion["display_text"][0] in [CLASS_PREFIX_CHAR, PARAMTER_CHAR]
-		or selected_completion["display_text"][-1] == PARAMTER_CHAR
+	var icon: Texture2D = selected_completion["icon"]
+	var suffix: String = display_text[-1]
+	var kind: CompletionKind = (
+		CompletionKind.FORMATTING if icon == BBCODE_COMPLETION_ICON else
+		CompletionKind.COLOR if icon == Scraper.get_color_icon() else
+		CompletionKind.CLASS_REFERENCE if prefix == CLASS_REFERENCE_PREFIX_CHAR else
+		CompletionKind.REFERENCE_START if suffix == REFERENCE_START_SUFFIX_CHAR else
+		CompletionKind.REFERENCE_END if suffix == REFERENCE_END_SUFFIX_CHAR else
+		CompletionKind.REFERENCING_TAG if icon == Scraper.get_reference_icon() else
+		0
 	)
 	
-	var remove_redondant_quote_and_bracket: bool = false
+	print_rich("Kind is [color=red][code]", CompletionKind.find_key(kind))
 	
-	if is_bbcode:
-		print_rich("[color=red]BBCode is true[/color]")
-		for caret in get_caret_count():
-			var line: String = get_line(get_caret_line(caret)) + " " # Add space so that column is in range
-			var column: int = get_caret_column(caret)
-			if not line[column] == "]":
-				insert_text_at_caret("]", caret)
-				# Replace caret at it's previous column
-				set_caret_column(column, false, caret)
+	begin_complex_operation()
 	
 	# Don't use the following code, it's a dev crime.
 	# Oops, I just did...
@@ -299,19 +311,22 @@ func _confirm_code_completion(replace: bool = false) -> void:
 	set_script(null)
 	super.confirm_code_completion(replace)
 	set_script(script)
-	if is_bbcode:
+	
+	if (
+		kind == CompletionKind.FORMATTING
+		or kind == CompletionKind.CLASS_REFERENCE
+		or kind == CompletionKind.REFERENCING_TAG
+	):
 		for caret in get_caret_count():
-			var line_i: int = get_caret_line(caret)
-			var line: String = get_line(line_i)
-			var first_pipe: int = line.find("|")
-			if first_pipe == -1: # Just in case
-				continue
-			var pipe_end: int = first_pipe + 1
-			while pipe_end < line.length() and line[pipe_end] == "|":
-				pipe_end += 1
-			set_line(line_i, line.left(first_pipe) + line.substr(pipe_end))
-			set_caret_column(pipe_end-1, false, caret)
-	elif selected_completion["icon"] == Scraper.get_color_icon():
+			var line: String = get_line(get_caret_line(caret)) + " " # Add space so that column is in range
+			var column: int = get_caret_column(caret)
+			print(line)
+			if not line[column] == "]":
+				insert_text_at_caret("]", caret)
+				# Replace caret at it's previous column
+				set_caret_column(column, false, caret)
+	
+	if kind == CompletionKind.COLOR:
 		var line_i: int = get_caret_line()
 		var line: String = get_line(line_i)
 		var column: int = get_caret_column()
@@ -326,17 +341,28 @@ func _confirm_code_completion(replace: bool = false) -> void:
 		print_rich("[color=red]Color is true[/color]")
 		for caret in get_caret_count():
 			set_caret_column(get_caret_column(caret) + 1, false, caret) 
+	elif kind:
+		for caret in get_caret_count():
+			var line_i: int = get_caret_line(caret)
+			var line: String = get_line(line_i)
+			var first_pipe: int = line.find("|")
+			if first_pipe == -1: # Just in case
+				continue
+			var pipe_end: int = first_pipe + 1
+			while pipe_end < line.length() and line[pipe_end] == "|":
+				pipe_end += 1
+			set_line(line_i, line.left(first_pipe) + line.substr(pipe_end))
+			set_caret_column(pipe_end-1, false, caret)
 	
 	end_complex_operation()
 	
-	if is_bbcode:
-		if selected_completion["display_text"][-1] == PARAMTER_CHAR:
-			var prefixes := code_completion_prefixes
-			code_completion_prefixes += [" "]
-			request_code_completion()
-			code_completion_prefixes = prefixes
-		else:
-			request_code_completion()
+	if kind == CompletionKind.REFERENCING_TAG:
+		var prefixes := code_completion_prefixes
+		code_completion_prefixes += [" "]
+		request_code_completion()
+		code_completion_prefixes = prefixes
+	elif kind:
+		request_code_completion()
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -381,8 +407,3 @@ func _on_color_picker_color_changed(color: Color) -> void:
 		
 		insert_text_at_caret(hex, caret)
 		set_caret_column(column_i)
-
-
-
-
-## Test poazek [a
