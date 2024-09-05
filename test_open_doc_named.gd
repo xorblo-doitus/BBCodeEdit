@@ -8,7 +8,7 @@ extends Node
 ## 
 ##]
 ##space
-## space
+## space[member ]
 ##
 ## [
 ## color=red]
@@ -16,6 +16,12 @@ extends Node
 ##   space[/color]
 ## [c
 var truc: bool
+
+@export_category("cat")
+@export_group("grouuuup")
+## [member Tween.]
+var machin: int = 123
+#var sérieux: null = null
 
 
 ## Test [font=res://NoitaPixel.ttf]azeiln,azlekj,azUPDATE3[/font][color=aqua]azejnzaekj[/color]

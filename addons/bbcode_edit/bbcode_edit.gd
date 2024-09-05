@@ -23,6 +23,7 @@ const COLOR_PICKER_PATH = ^"_BBCodeEditColorPicker/ColorPicker"
 
 const MALFORMED = "MALFORMED"
 const COMMAND_PREFIX_CHAR = "\u0001"
+const ORDER_PREFIX = "\ufffe"
 const CLASS_REFERENCE_PREFIX_CHAR = "\uffff"
 const REFERENCE_START_SUFFIX_CHAR = "\uffff"
 const REFERENCE_END_SUFFIX_CHAR = "\ufffe"
@@ -130,7 +131,7 @@ func add_completion_options() -> void:
 	for i in len(class_completions.names):
 		var name_: String = class_completions.names[i]
 		add_code_completion_option(
-			CodeEdit.KIND_PLAIN_TEXT,
+			CodeEdit.KIND_CLASS,
 			CLASS_REFERENCE_PREFIX_CHAR + "[" + name_ + "]",
 			name_ + "||",
 			font_color,
@@ -217,6 +218,17 @@ func check_parameter_completions(to_test: String, describes_i: int, describes: S
 			
 			update_code_completion_options(true)
 			return true
+		"member":
+			if parameters.size() >= 2:
+				var path: PackedStringArray = parameters[1].split(".")
+				if path.size() >= 2:
+					if ClassDB.class_exists(path[0]):
+						add_member_completion_from_class_name(path[0])
+					update_code_completion_options(true)
+					return true
+			add_member_completion_from_script(EditorInterface.get_script_editor().get_current_script())
+			add_classes_completion()
+			return true
 	
 	return false
 
@@ -265,6 +277,48 @@ func add_color_completions() -> void:
 		EditorInterface.get_base_control().get_theme_icon("ColorPicker", "EditorIcons"),
 	)
 	update_code_completion_options(true)
+
+
+## Add completion for classes WITH SUBSCRIPT (aka it will add a dot at the end)
+func add_classes_completion() -> void:
+	var class_completions := Completions.get_class_completions()
+	for i in len(class_completions.names):
+		var name_: String = class_completions.names[i]
+		add_code_completion_option(
+			CodeEdit.KIND_CLASS,
+			ORDER_PREFIX + name_ + "." + REFERENCE_START_SUFFIX_CHAR,
+			name_ + ".",
+			get_theme_color(&"font_color"),
+			class_completions.icons[i],
+		)
+	update_code_completion_options(true)
+
+
+func add_member_completion_from_script(class_: Script) -> void:
+	add_members(class_.get_script_property_list())
+	if class_.get_base_script():
+		add_member_completion_from_script(class_.get_base_script())
+	else :
+		add_member_completion_from_class_name(class_.get_instance_base_type())
+
+
+
+func add_member_completion_from_class_name(class_: StringName) -> void:
+	add_members(ClassDB.class_get_property_list(class_))
+
+
+func add_members(members: Array[Dictionary]) -> void:
+	for member in members:
+		if member["type"] == TYPE_NIL:
+			continue
+		
+		add_code_completion_option(
+			CodeEdit.KIND_MEMBER,
+			member["name"],
+			member["name"],
+			get_theme_color(&"font-color"),
+			Scraper.get_icon(&"MemberProperty"),
+		)
 
 
 func _confirm_code_completion(replace: bool = false) -> void:
