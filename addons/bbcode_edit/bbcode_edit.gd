@@ -314,7 +314,12 @@ func add_member_completion_from_class_name(class_: StringName) -> void:
 
 func add_members(members: Array[Dictionary]) -> void:
 	for member in members:
-		if member["type"] == TYPE_NIL:
+		if member["usage"] & (
+			PROPERTY_USAGE_INTERNAL
+			| PROPERTY_USAGE_CATEGORY
+			| PROPERTY_USAGE_GROUP
+			| PROPERTY_USAGE_SUBGROUP
+		):
 			continue
 		
 		add_code_completion_option(
