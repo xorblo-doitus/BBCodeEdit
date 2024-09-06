@@ -5,4 +5,4 @@
 - [x] Improve completion kind detection
 - [x] Change properties' icons to their type? snake_case is enough to differentiate from classes. Feasibility?
 - [ ] Sub class member completion? Feasibility?
-- [ ] Fix inheriting custom class create duplicates member
+- [x] Fix inheriting custom class create duplicates member

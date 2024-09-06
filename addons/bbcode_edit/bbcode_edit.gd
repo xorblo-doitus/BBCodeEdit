@@ -301,10 +301,7 @@ func add_classes_completion() -> void:
 
 func add_member_completion_from_script(class_: Script) -> void:
 	add_members(class_.get_script_property_list())
-	if class_.get_base_script():
-		add_member_completion_from_script(class_.get_base_script())
-	else:
-		add_member_completion_from_class_name(class_.get_instance_base_type())
+	add_member_completion_from_class_name(class_.get_instance_base_type())
 
 
 
