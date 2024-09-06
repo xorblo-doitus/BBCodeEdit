@@ -224,6 +224,11 @@ func check_parameter_completions(to_test: String, describes_i: int, describes: S
 				if path.size() >= 2:
 					if ClassDB.class_exists(path[0]):
 						add_member_completion_from_class_name(path[0])
+					else:
+						for other_class_ in ProjectSettings.get_global_class_list():
+							if other_class_["class"] == path[0]:
+								add_member_completion_from_script(load(other_class_["path"]))
+								break
 					update_code_completion_options(true)
 					return true
 			add_member_completion_from_script(EditorInterface.get_script_editor().get_current_script())
@@ -298,7 +303,7 @@ func add_member_completion_from_script(class_: Script) -> void:
 	add_members(class_.get_script_property_list())
 	if class_.get_base_script():
 		add_member_completion_from_script(class_.get_base_script())
-	else :
+	else:
 		add_member_completion_from_class_name(class_.get_instance_base_type())
 
 
