@@ -1,3 +1,4 @@
+@icon("res://addons/bbcode_edit/bbcode_completion_icon.svg")
 class_name Named
 extends Node
 
@@ -24,6 +25,8 @@ var dyamic = 987
 var varying: Variant = "987"
 var _str: String = "987"
 var machin: int = 123
+## [member ]
+var obj: Node = Node.new()
 #var sérieux: null = null
 
 

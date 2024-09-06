@@ -4,6 +4,52 @@ extends Object
 ## This singleton has utility methods to scrap the Editor's interface
 
 
+const TYPE_TO_NAME = {
+	TYPE_NIL: &"Variant",
+	
+	TYPE_BOOL: &"bool",
+	TYPE_INT: &"int",
+	TYPE_FLOAT: &"float",
+	TYPE_STRING: &"String",
+	
+	TYPE_VECTOR2: &"Vector2",
+	TYPE_VECTOR2I: &"Vector2i",
+	TYPE_RECT2: &"Rect2",
+	TYPE_RECT2I: &"Rect2i",
+	TYPE_VECTOR3: &"Vector3",
+	TYPE_VECTOR3I: &"Vector3i",
+	TYPE_TRANSFORM2D: &"Transform2D",
+	TYPE_VECTOR4: &"Vector4",
+	TYPE_VECTOR4I: &"Vector4i",
+	TYPE_PLANE: &"Plane",
+	TYPE_QUATERNION: &"Quaternion",
+	TYPE_AABB: &"AABB",
+	TYPE_BASIS: &"Basis",
+	TYPE_TRANSFORM3D: &"Transform3D",
+	TYPE_PROJECTION: &"Projection",
+	
+	TYPE_COLOR: &"Color",
+	TYPE_STRING_NAME: &"StringName",
+	TYPE_NODE_PATH: &"NodePath",
+	TYPE_RID: &"RID",
+	TYPE_OBJECT: &"Object",
+	TYPE_CALLABLE: &"Callable",
+	TYPE_SIGNAL: &"Signal",
+	TYPE_DICTIONARY: &"Dictionary",
+	TYPE_ARRAY: &"Array",
+	
+	TYPE_PACKED_BYTE_ARRAY: &"PackedByteArray",
+	TYPE_PACKED_INT32_ARRAY: &"PackedInt32Array",
+	TYPE_PACKED_INT64_ARRAY: &"PackedInt64Array",
+	TYPE_PACKED_FLOAT32_ARRAY: &"PackedFloat32Array",
+	TYPE_PACKED_FLOAT64_ARRAY: &"PackedFloat64Array",
+	TYPE_PACKED_STRING_ARRAY: &"PackedStringArray",
+	TYPE_PACKED_VECTOR2_ARRAY: &"PackedVector2Array",
+	TYPE_PACKED_VECTOR3_ARRAY: &"PackedVector3Array",
+	TYPE_PACKED_COLOR_ARRAY: &"PackedColorArray",
+	TYPE_PACKED_VECTOR4_ARRAY: &"PackedVector4Array",
+}
+
 
 static func get_icon(icon: StringName) -> Texture2D:
 	return EditorInterface.get_base_control().get_theme_icon(icon, &"EditorIcons")
@@ -24,13 +70,36 @@ static func try_get_icon(icon: StringName, fallback: StringName) -> Texture2D:
 	return result
 
 
-static func get_class_icon(class_name_: StringName) -> Texture2D:
+static func get_builtin_class_icon(class_name_: StringName) -> Texture2D:
 	var result: Texture2D = get_icon(class_name_)
 	var file_broken: Texture2D = get_icon(&"za86e81czxe1s89az6ee7s1") # Random
 	while result == file_broken and class_name_ != &"":
 		class_name_ = ClassDB.get_parent_class(class_name_)
 		result = get_icon(class_name_)
 	return result
+
+
+static func get_class_icon(name: StringName, fallback: StringName) -> Texture2D:
+	if ClassDB.class_exists(name):
+		return get_builtin_class_icon(name)
+	var base_name = name
+	var global_class_list := ProjectSettings.get_global_class_list()
+	var found: bool = true
+	while found:
+		found = false
+		for class_ in global_class_list:
+			if class_["class"] == name:
+				if class_["icon"]:
+					return load(class_["icon"])
+				else:
+					name = class_["base"]
+					if ClassDB.class_exists(name):
+						return get_builtin_class_icon(name)
+					found = true
+					break
+	
+	# This can happen for type union (ex: CanvasItemMaterial,ShaderMaterial)
+	return get_icon(fallback)
 
 
 ## Scrap the Editor tree to find if it's unsaved.

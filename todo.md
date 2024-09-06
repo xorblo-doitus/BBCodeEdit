@@ -3,5 +3,6 @@
 - [x] Cleanup code
 - [ ] Fix text typed to bring command not being erased on completion (... Verify this is still the case)
 - [x] Improve completion kind detection
-- [ ] Change properties' icons to their type? snake_case is enough to differentiate from classes. Feasibility?
-- [ ] Sub class member ompletion? Feasibility?
+- [x] Change properties' icons to their type? snake_case is enough to differentiate from classes. Feasibility?
+- [ ] Sub class member completion? Feasibility?
+- [ ] Fix inheriting custom class create duplicates member

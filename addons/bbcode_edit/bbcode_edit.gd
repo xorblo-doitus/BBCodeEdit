@@ -327,8 +327,15 @@ func add_members(members: Array[Dictionary]) -> void:
 			member["name"],
 			member["name"],
 			get_theme_color(&"font-color"),
-			Scraper.get_icon(&"MemberProperty"),
+			get_icon_for_member(member),
 		)
+
+
+func get_icon_for_member(member: Dictionary) -> Texture2D:
+	if member["class_name"]:
+		return Scraper.get_class_icon(member["class_name"], &"MemberProperty")
+	
+	return Scraper.get_icon(Scraper.TYPE_TO_NAME.get(member["type"], &"MemberProperty"))
 
 
 func _confirm_code_completion(replace: bool = false) -> void:
