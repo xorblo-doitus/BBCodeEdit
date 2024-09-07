@@ -474,4 +474,4 @@ func _on_color_picker_color_changed(color: Color) -> void:
 			set_line(line_i, line.left(column_i) + to_scan.substr(end))
 		
 		insert_text_at_caret(hex, caret)
-		set_caret_column(column_i)
+		set_caret_column(column_i, false, caret)
