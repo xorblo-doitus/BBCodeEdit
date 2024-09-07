@@ -234,6 +234,22 @@ func check_parameter_completions(to_test: String, describes_i: int, describes: S
 			add_member_completion_from_script(EditorInterface.get_script_editor().get_current_script())
 			add_classes_completion()
 			return true
+		"method":
+			if parameters.size() >= 2:
+				var path: PackedStringArray = parameters[1].split(".")
+				if path.size() >= 2:
+					if ClassDB.class_exists(path[0]):
+						add_method_completion_from_class_name(path[0])
+					else:
+						for other_class_ in ProjectSettings.get_global_class_list():
+							if other_class_["class"] == path[0]:
+								add_method_completion_from_script(load(other_class_["path"]))
+								break
+					update_code_completion_options(true)
+					return true
+			add_method_completion_from_script(EditorInterface.get_script_editor().get_current_script())
+			add_classes_completion()
+			return true
 	
 	return false
 
@@ -328,13 +344,41 @@ func add_members(members: Array[Dictionary]) -> void:
 		)
 
 
-func get_icon_for_member(member: Dictionary) -> Texture2D:
-	if member["class_name"]:
-		return Scraper.get_class_icon(member["class_name"], &"MemberProperty")
+func get_icon_for_member(member: Dictionary, fallback: StringName = &"MemberProperty") -> Texture2D:
+	if member["type"] == TYPE_OBJECT:
+		return Scraper.get_class_icon(member["class_name"], fallback)
 	
-	return Scraper.get_icon(Scraper.TYPE_TO_NAME.get(member["type"], &"MemberProperty"))
-## [color=4d806d9a6829965e893b8467a85e31498079a26143aa479c39827c4d834c8e6e3d][/color]
-## [color=8e6b5b4d806d9a6829965e893b8467a85e31498079a26143aa479c39827c4d834c8e6e3d][/color]
+	return Scraper.get_icon(Scraper.TYPE_TO_NAME.get(member["type"], fallback))
+
+func add_method_completion_from_script(class_: Script) -> void:
+	add_methods(class_.get_method_list())
+	add_method_completion_from_class_name(class_.get_instance_base_type())
+
+
+func add_method_completion_from_class_name(class_: StringName) -> void:
+	add_methods(ClassDB.class_get_method_list(class_))
+
+
+func add_methods(methods: Array[Dictionary]) -> void:
+	for method in methods:
+		add_code_completion_option(
+			CodeEdit.KIND_FUNCTION,
+			method["name"] + REFERENCE_END_SUFFIX_CHAR,
+			method["name"] + "||",
+			get_theme_color(&"font-color"),
+			get_icon_for_method(method),
+		)
+
+
+func get_icon_for_method(method: Dictionary) -> Texture2D:
+	var returned: Dictionary = method["return"]
+	
+	if returned["type"] == TYPE_NIL:
+		return Scraper.get_icon(&"MemberMethod")
+	
+	return get_icon_for_member(returned, &"Function")
+
+
 func _confirm_code_completion(replace: bool = false) -> void:
 	var selected_completion: Dictionary = get_code_completion_option(get_code_completion_selected_index())
 	var display_text: String = selected_completion["display_text"]

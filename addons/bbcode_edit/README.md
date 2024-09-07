@@ -25,7 +25,8 @@ A Godot addon that help editing BBCode in CodeEdit nodes, especially useful for 
   - [ ] Documentation comments's references (Don't know feasibility):
     - [x] Classes
     - [x] Parameters
-    - [x] Members (aka. Properties) (Don't work for nested subclasses)
+    - [x] Members (aka. Properties) (Don't work for nested subclasses, or @GDScript)
+    - [x] Methods (aka. Functions) (Don't work for nested subclasses, or @GDScript)
 - [ ] ~~BBCode preview (trough [SyntaxHighlighter](https://docs.godotengine.org/en/4.3/classes/class_syntaxhighlighter.html)?)~~\
       ~~Edit: Won't work because GDSCriptSyntaxHighlighter can't be extended\
       BBCode spellcheck/semi-preview (trough `_draw()` ?)~~\
