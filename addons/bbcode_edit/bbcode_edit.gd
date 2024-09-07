@@ -321,8 +321,8 @@ func add_members(members: Array[Dictionary]) -> void:
 		
 		add_code_completion_option(
 			CodeEdit.KIND_MEMBER,
-			member["name"],
-			member["name"],
+			member["name"] + REFERENCE_END_SUFFIX_CHAR,
+			member["name"] + "||",
 			get_theme_color(&"font-color"),
 			get_icon_for_member(member),
 		)
