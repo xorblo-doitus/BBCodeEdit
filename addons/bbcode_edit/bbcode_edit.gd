@@ -182,7 +182,7 @@ func check_parameter_completions(to_test: String, describes_i: int, describes: S
 						request_code_completion.call_deferred(true)
 					add_hex_color(value)
 					
-				add_color_completions()
+				add_color_completions(value.length())
 				return true
 	
 	match parameters[0]:
@@ -262,7 +262,7 @@ func add_hex_color(hex: String, include_prefix: bool = false) -> void:
 	)
 
 
-func add_color_completions() -> void:
+func add_color_completions(chars_typed: int) -> void:
 	var icon = Scraper.get_color_icon()
 	for color in Completions.COLORS:
 		add_code_completion_option(
@@ -277,7 +277,7 @@ func add_color_completions() -> void:
 	add_code_completion_option(
 		CodeEdit.KIND_PLAIN_TEXT,
 		COMMAND_PREFIX_CHAR + "Bring color picker",
-		_COMMAND_COLOR_PICKER,
+		_COMMAND_COLOR_PICKER + "," + str(chars_typed),
 		get_theme_color(&"font_color"),
 		EditorInterface.get_base_control().get_theme_icon("ColorPicker", "EditorIcons"),
 	)
@@ -333,15 +333,25 @@ func get_icon_for_member(member: Dictionary) -> Texture2D:
 		return Scraper.get_class_icon(member["class_name"], &"MemberProperty")
 	
 	return Scraper.get_icon(Scraper.TYPE_TO_NAME.get(member["type"], &"MemberProperty"))
-
-
+## [color=4d806d9a6829965e893b8467a85e31498079a26143aa479c39827c4d834c8e6e3d][/color]
+## [color=8e6b5b4d806d9a6829965e893b8467a85e31498079a26143aa479c39827c4d834c8e6e3d][/color]
 func _confirm_code_completion(replace: bool = false) -> void:
 	var selected_completion: Dictionary = get_code_completion_option(get_code_completion_selected_index())
 	var display_text: String = selected_completion["display_text"]
 	var prefix: String = display_text[0]
 	
 	if prefix == COMMAND_PREFIX_CHAR:
-		match selected_completion["insert_text"]:
+		var parts: PackedStringArray = selected_completion["insert_text"].split(",")
+		var chars_to_remove: int = int(parts[1]) if parts.size() >= 2 else 0
+		if chars_to_remove:
+			for caret in get_caret_count():
+				var line_i: int = get_caret_line(caret)
+				var line: String = get_line(line_i)
+				var column_i: int = get_caret_column(caret)
+				set_line(line_i, line.left(column_i - chars_to_remove) + line.substr(column_i))
+				set_caret_column(column_i - chars_to_remove, false, caret)
+		
+		match parts[0]:
 			_COMMAND_COLOR_PICKER:
 				if not has_node(^"BBCODE_EDIT_COLOR_PICKER"):
 					add_child(preload("res://addons/bbcode_edit/color_picker.tscn").instantiate())

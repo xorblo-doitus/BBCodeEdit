@@ -1,7 +1,0 @@
-- [x] Find a way to complete numreic values for color.
-- [x] Fix `|` showing up in display text
-- [x] Cleanup code
-- [ ] Fix text typed to bring command not being erased on completion (... Verify this is still the case)
-- [x] Improve completion kind detection
-- [x] Change properties' icons to their type? snake_case is enough to differentiate from classes.
-- [x] Fix inheriting custom class create duplicates member
