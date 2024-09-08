@@ -11,6 +11,7 @@ enum CompletionKind {
 	REFERENCE_START,
 	REFERENCE_END,
 	REFERENCING_TAG,
+	ANNOTATION,
 }
 
 
@@ -27,6 +28,7 @@ const ORDER_PREFIX = "\ufffe"
 const CLASS_REFERENCE_PREFIX_CHAR = "\uffff"
 const REFERENCE_START_SUFFIX_CHAR = "\uffff"
 const REFERENCE_END_SUFFIX_CHAR = "\ufffe"
+const ANNOTATION_SUFFIX_CHAR = "\ufff0"
 const _COMMAND_COLOR_PICKER = "color_picker"
 
 static var REGEX_PARENTHESES = RegEx.create_from_string(r"\(([^)]+)\)")
@@ -58,6 +60,42 @@ func add_completion_options() -> void:
 	print_rich("[color=red]in bbcode completion[/color]")
 	
 	var to_test: String = trim_doc_comment_start(line.left(column_i))
+	if to_test[0] == "@" and not (
+		to_test.begins_with("@tutorial: ")
+		or to_test.begins_with("@deprecated: ")
+		or to_test.begins_with("@experimental: ")
+	):
+		add_code_completion_option(
+			CodeEdit.KIND_PLAIN_TEXT,
+			"@deprecated" + ANNOTATION_SUFFIX_CHAR,
+			"deprecated\n## ",
+			get_theme_color(&"font-color"),
+			Scraper.get_icon(&"StatusError"),
+		)
+		add_code_completion_option(
+			CodeEdit.KIND_PLAIN_TEXT,
+			"@deprecated: Some explaination" + ANNOTATION_SUFFIX_CHAR,
+			"deprecated: ",
+			get_theme_color(&"font-color"),
+			Scraper.get_icon(&"StatusError"),
+		)
+		add_code_completion_option(
+			CodeEdit.KIND_PLAIN_TEXT,
+			"@experimental" + ANNOTATION_SUFFIX_CHAR,
+			"experimental\n## ",
+			get_theme_color(&"font-color"),
+			Scraper.get_icon(&"NodeWarning"),
+		)
+		add_code_completion_option(
+			CodeEdit.KIND_PLAIN_TEXT,
+			"@experimental: Some explaination" + ANNOTATION_SUFFIX_CHAR,
+			"experimental: ",
+			get_theme_color(&"font-color"),
+			Scraper.get_icon(&"NodeWarning"),
+		)
+		update_code_completion_options(true)
+		return
+	
 	var prev_line_i: int = line_i - 1
 	var prev_line: String = get_line(prev_line_i).strip_edges(true, false)
 	while prev_line.begins_with("##"):
@@ -90,7 +128,7 @@ func add_completion_options() -> void:
 		+ Completions.TAGS_RICH_TEXT_LABEL
 	)
 	var displays: Array[String] = []
-	displays.assign(completions.map(bracket))
+	displays.assign(completions.map(_bracket))
 	
 	print("First completion is: ", completions[0])
 	
@@ -106,7 +144,7 @@ func add_completion_options() -> void:
 	var reference_completions: Array[String] = Completions.TAGS_DOC_COMMENT_REFERENCE
 	var reference_displays: Array[String] = []
 	for completion in reference_completions:
-		reference_displays.append(bracket(completion.trim_suffix("|") + "Class.name"))
+		reference_displays.append(_bracket(completion.trim_suffix("|") + "Class.name"))
 	
 	var reference_icon: Texture2D = Scraper.get_reference_icon()
 	for i in reference_completions.size():
@@ -141,7 +179,7 @@ func add_completion_options() -> void:
 	update_code_completion_options(true) # NEEDED so that `[` triggers popup
 
 
-func bracket(string: String) -> String:
+func _bracket(string: String) -> String:
 	return "[" + string + "]"
 
 
@@ -565,6 +603,7 @@ func _confirm_code_completion(replace: bool = false) -> void:
 		CompletionKind.CLASS_REFERENCE if prefix == CLASS_REFERENCE_PREFIX_CHAR else
 		CompletionKind.REFERENCE_START if suffix == REFERENCE_START_SUFFIX_CHAR else
 		CompletionKind.REFERENCE_END if suffix == REFERENCE_END_SUFFIX_CHAR else
+		CompletionKind.ANNOTATION if suffix == ANNOTATION_SUFFIX_CHAR else
 		CompletionKind.REFERENCING_TAG if icon == Scraper.get_reference_icon() else
 		0
 	)
@@ -631,7 +670,7 @@ func _confirm_code_completion(replace: bool = false) -> void:
 		code_completion_prefixes += [" "]
 		request_code_completion()
 		code_completion_prefixes = prefixes
-	elif kind:
+	elif kind and kind != CompletionKind.ANNOTATION:
 		request_code_completion()
 
 

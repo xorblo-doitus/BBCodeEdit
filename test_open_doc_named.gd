@@ -13,9 +13,13 @@ extends Node
 ## [constant D]
 ## [enum ]
 ## [constant ]
-## [enum NamedEnum]
+##
+## @deprecated: Wow [b]Wow[/b]
+## @experimental: Wow [b]Wow[/b]
+## NO@tutorial: https://example.com
 
-
+## @deprecated: Wow [b]Wow[/b]
+## @experimental: Wow [b]Wow[/b]
 enum NamedEnum {
 	A,
 	B,

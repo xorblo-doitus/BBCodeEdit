@@ -12,7 +12,10 @@ A Godot addon that help editing BBCode in CodeEdit nodes, especially useful for 
   - [ ] Documentation comments:
     - [x] formating tags
     - [x] referencing tag
-    - [ ] `@` tags
+    - [ ] `@` tags:
+      - [x] deprecated
+      - [x] experimental
+      - [ ] tutorial
     - [ ] Snipets:
       - [ ] **Note:**, **Warning:**...
 - [ ] Classify tags accepted in documentation comments according to [Godot Reference](https://docs.godotengine.org/en/4.3/tutorials/scripting/gdscript/gdscript_documentation_comments.html#bbcode-and-class-reference)
@@ -30,7 +33,7 @@ A Godot addon that help editing BBCode in CodeEdit nodes, especially useful for 
     - [x] Constants
     - [x] Signals
     - [x] Enums
-    - [ ] Other references like annotations, operator... are not implemented, because rarely used.
+    - [ ] Other references like annotations or operators are not implemented, because rarely used.
 - [ ] ~~BBCode preview (trough [SyntaxHighlighter](https://docs.godotengine.org/en/4.3/classes/class_syntaxhighlighter.html)?)~~\
       ~~Edit: Won't work because GDSCriptSyntaxHighlighter can't be extended\
       BBCode spellcheck/semi-preview (trough `_draw()` ?)~~\
