@@ -2,6 +2,11 @@
 A Godot addon that help editing BBCode in CodeEdit nodes, especially useful for documentation comments in the ScriptEditor.
 
 
+## Showcase
+
+![Advanced completion for color tag.](addons/bbcode_edit/.assets_for_readme/color_completion.mp4)
+
+
 # Features
 
 *Checked items are the implemented ones, unchacked are the ones in development*
