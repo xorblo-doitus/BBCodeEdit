@@ -108,12 +108,14 @@ static func get_type_icon(value: Variant, fallback: StringName) -> Texture2D:
 		var script: Script = value.get_script()
 		if script:
 			var search_for: Script = script
-			while search_for:
+			while true:
 				for class_ in ProjectSettings.get_global_class_list():
 					if class_["path"] == search_for.resource_path:
 						return get_class_icon(class_["class"], fallback)
-				search_for = search_for.get_base_script()
-			return get_builtin_class_icon(search_for.get_instance_base_type())
+				if search_for.get_base_script():
+					search_for = search_for.get_base_script()
+				else:
+					return get_builtin_class_icon(search_for.get_instance_base_type())
 	
 	return get_icon(TYPE_TO_NAME.get(type, fallback))
 
