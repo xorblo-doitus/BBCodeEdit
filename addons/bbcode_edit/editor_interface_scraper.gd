@@ -105,6 +105,17 @@ static func get_class_icon(name: StringName, fallback: StringName) -> Texture2D:
 static func get_type_icon(value: Variant, fallback: StringName) -> Texture2D:
 	var type: int = typeof(value)
 	if type == TYPE_OBJECT:
+		if value is Script:
+			var to_check: Script = value
+			while true:
+				if to_check.get_global_name():
+					return get_class_icon(to_check.get_global_name(), fallback)
+				# TODO MAYBE Read first line for @icon
+				if to_check.get_base_script():
+					to_check = to_check.get_base_script()
+				else:
+					return get_builtin_class_icon(to_check.get_instance_base_type())
+		
 		var script: Script = value.get_script()
 		if script:
 			var search_for: Script = script
