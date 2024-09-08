@@ -4,7 +4,7 @@ A Godot addon that help editing BBCode in CodeEdit nodes, especially useful for 
 
 ## Showcase
 
-![Advanced completion for color tag](.assets_for_readme/color_completion.gif)
+![Advanced completion for color tag](/addons/bbcode_edit/.assets_for_readme/color_completion.gif)
 
 # Features
 
