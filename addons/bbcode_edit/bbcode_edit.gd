@@ -266,6 +266,22 @@ func check_parameter_completions(to_test: String, describes_i: int, describes: S
 			add_constant_completion_from_script(EditorInterface.get_script_editor().get_current_script())
 			add_classes_completion()
 			return true
+		"signal":
+			if parameters.size() >= 2:
+				var path: PackedStringArray = parameters[1].split(".")
+				if path.size() >= 2:
+					if ClassDB.class_exists(path[0]):
+						add_signal_completion_from_class_name(path[0])
+					else:
+						for other_class_ in ProjectSettings.get_global_class_list():
+							if other_class_["class"] == path[0]:
+								add_signal_completion_from_script(load(other_class_["path"]))
+								break
+					update_code_completion_options(true)
+					return true
+			add_signal_completion_from_script(EditorInterface.get_script_editor().get_current_script())
+			add_classes_completion()
+			return true
 	
 	return false
 
@@ -435,6 +451,27 @@ func add_constants(constants: Dictionary) -> void:
 			get_theme_color(&"font-color"),
 			Scraper.get_type_icon(value, &"MemberConstant"),
 			value
+		)
+
+
+func add_signal_completion_from_script(class_: Script) -> void:
+	add_signals(class_.get_script_signal_list())
+	add_signal_completion_from_class_name(class_.get_instance_base_type())
+
+
+func add_signal_completion_from_class_name(class_: StringName) -> void:
+	add_signals(ClassDB.class_get_signal_list(class_))
+
+
+func add_signals(signals: Array[Dictionary]) -> void:
+	var icon: Texture2D = Scraper.get_icon(&"MemberSignal")
+	for signal_ in signals:
+		add_code_completion_option(
+			CodeEdit.KIND_SIGNAL,
+			signal_["name"] + REFERENCE_END_SUFFIX_CHAR,
+			signal_["name"] + "||",
+			get_theme_color(&"font-color"),
+			icon,
 		)
 
 

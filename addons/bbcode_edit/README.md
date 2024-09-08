@@ -28,6 +28,7 @@ A Godot addon that help editing BBCode in CodeEdit nodes, especially useful for 
     - [x] Members (aka. Properties)
     - [x] Methods (aka. Functions)
     - [x] Constants
+    - [x] Signals
 - [ ] ~~BBCode preview (trough [SyntaxHighlighter](https://docs.godotengine.org/en/4.3/classes/class_syntaxhighlighter.html)?)~~\
       ~~Edit: Won't work because GDSCriptSyntaxHighlighter can't be extended\
       BBCode spellcheck/semi-preview (trough `_draw()` ?)~~\
