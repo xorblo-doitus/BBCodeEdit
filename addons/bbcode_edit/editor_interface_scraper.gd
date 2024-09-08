@@ -127,6 +127,8 @@ static func get_type_icon(value: Variant, fallback: StringName) -> Texture2D:
 					search_for = search_for.get_base_script()
 				else:
 					return get_builtin_class_icon(search_for.get_instance_base_type())
+		
+		return get_builtin_class_icon(value.get_class())
 	
 	return get_icon(TYPE_TO_NAME.get(type, fallback))
 
