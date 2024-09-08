@@ -13,11 +13,12 @@ extends Node
 ## [constant D]
 ## [enum ]
 ## [constant ]
-##
+## @
 ## @deprecated: Wow [b]Wow[/b]
 ## @experimental: Wow [b]Wow[/b]
-## NO@tutorial: https://example.com
+## @tutorial(TITLE): https://example.com
 
+## @tutorial(hhhhm): https://
 ## @deprecated: Wow [b]Wow[/b]
 ## @experimental: Wow [b]Wow[/b]
 enum NamedEnum {
@@ -59,6 +60,8 @@ var dyamic = 987
 var varying: Variant = "987"
 @warning_ignore("unused_private_class_variable")
 var _str: String = "987"
+## ah
+## @tutorial(Wrong place): https://example.com
 var machin: int = 123
 ## [member ]
 var obj: Node = Node.new()

@@ -31,6 +31,19 @@ const REFERENCE_END_SUFFIX_CHAR = "\ufffe"
 const ANNOTATION_SUFFIX_CHAR = "\ufff0"
 const _COMMAND_COLOR_PICKER = "color_picker"
 
+const CLASS_DOC_ENDERS: Array[String] = [
+	"##",
+	"signal",
+	"enum",
+	"const",
+	"@export",
+	"var",
+	"@onready",
+	"static",
+	"func",
+	"class ",
+]
+
 static var REGEX_PARENTHESES = RegEx.create_from_string(r"\(([^)]+)\)")
 
 
@@ -93,6 +106,31 @@ func add_completion_options() -> void:
 			get_theme_color(&"font-color"),
 			Scraper.get_icon(&"NodeWarning"),
 		)
+		
+		var class_comment_end_line: int = 0
+		while not _is_line_class_doc_ender(get_line(class_comment_end_line)):
+			class_comment_end_line += 1
+		while get_line(class_comment_end_line).begins_with("##"):
+			class_comment_end_line += 1
+		if _is_line_class_doc_ender(get_line(class_comment_end_line)):
+			class_comment_end_line = -1
+		
+		if line_i < class_comment_end_line:
+			add_code_completion_option(
+				CodeEdit.KIND_PLAIN_TEXT,
+				"@tutorial: https://example.com" + ANNOTATION_SUFFIX_CHAR,
+				"tutorial: https://",
+				get_theme_color(&"font-color"),
+				Scraper.get_icon(&"ExternalLink"),
+			)
+			add_code_completion_option(
+				CodeEdit.KIND_PLAIN_TEXT,
+				"@tutorial(Title): https://example.com" + ANNOTATION_SUFFIX_CHAR,
+				"tutorial(|): https://",
+				get_theme_color(&"font-color"),
+				Scraper.get_icon(&"ExternalLink"),
+			)
+		
 		update_code_completion_options(true)
 		return
 	
@@ -177,6 +215,13 @@ func add_completion_options() -> void:
 		)
 	
 	update_code_completion_options(true) # NEEDED so that `[` triggers popup
+
+
+func _is_line_class_doc_ender(line: String) -> bool:
+	for doc_ender in CLASS_DOC_ENDERS:
+		if line.begins_with(doc_ender):
+			return true
+	return false
 
 
 func _bracket(string: String) -> String:
