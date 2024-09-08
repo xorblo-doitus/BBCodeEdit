@@ -102,6 +102,22 @@ static func get_class_icon(name: StringName, fallback: StringName) -> Texture2D:
 	return get_icon(fallback)
 
 
+static func get_type_icon(value: Variant, fallback: StringName) -> Texture2D:
+	var type: int = typeof(value)
+	if type == TYPE_OBJECT:
+		var script: Script = value.get_script()
+		if script:
+			var search_for: Script = script
+			while search_for:
+				for class_ in ProjectSettings.get_global_class_list():
+					if class_["path"] == search_for.resource_path:
+						return get_class_icon(class_["class"], fallback)
+				search_for = search_for.get_base_script()
+			return get_builtin_class_icon(search_for.get_instance_base_type())
+	
+	return get_icon(TYPE_TO_NAME.get(type, fallback))
+
+
 ## Scrap the Editor tree to find if it's unsaved.
 static func is_current_script_unsaved() -> bool:
 	# Reference path: $"../../../../../../@VSplitContainer@9820/@VBoxContainer@9821/@ItemList@9824"
