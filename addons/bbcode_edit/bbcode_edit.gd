@@ -250,6 +250,22 @@ func check_parameter_completions(to_test: String, describes_i: int, describes: S
 			add_method_completion_from_script(EditorInterface.get_script_editor().get_current_script())
 			add_classes_completion()
 			return true
+		"constant":
+			if parameters.size() >= 2:
+				var path: PackedStringArray = parameters[1].split(".")
+				if path.size() >= 2:
+					if ClassDB.class_exists(path[0]):
+						add_constant_completion_from_class_name(path[0])
+					else:
+						for other_class_ in ProjectSettings.get_global_class_list():
+							if other_class_["class"] == path[0]:
+								add_constant_completion_from_script(load(other_class_["path"]))
+								break
+					update_code_completion_options(true)
+					return true
+			add_constant_completion_from_script(EditorInterface.get_script_editor().get_current_script())
+			add_classes_completion()
+			return true
 	
 	return false
 
@@ -350,6 +366,7 @@ func get_icon_for_member(member: Dictionary, fallback: StringName = &"MemberProp
 	
 	return Scraper.get_icon(Scraper.TYPE_TO_NAME.get(member["type"], fallback))
 
+
 func add_method_completion_from_script(class_: Script) -> void:
 	add_methods(class_.get_method_list())
 	add_method_completion_from_class_name(class_.get_instance_base_type())
@@ -377,6 +394,48 @@ func get_icon_for_method(method: Dictionary) -> Texture2D:
 		return Scraper.get_icon(&"MemberMethod")
 	
 	return get_icon_for_member(returned, &"Function")
+
+
+func add_constant_completion_from_script(class_: Script) -> void:
+	add_constants(class_.get_script_constant_map())
+	add_constant_completion_from_class_name(class_.get_instance_base_type())
+
+
+func add_constant_completion_from_class_name(class_: StringName) -> void:
+	for constant_name in ClassDB.class_get_integer_constant_list(class_):
+		add_constants({constant_name: ClassDB.class_get_integer_constant(class_, constant_name)})
+
+
+func add_constants(constants: Dictionary) -> void:
+	for constant in constants:
+		var value: Variant = constants[constant]
+		var type: int = typeof(value)
+		
+		if type == TYPE_OBJECT and value is Script and value.resource_path.is_empty():
+			# Inner classes don't work in class
+			continue
+		
+		var display_text: String = constant
+		if type != TYPE_COLOR:
+			var repr: String = var_to_str(value)
+			if repr.is_empty():
+				if type == TYPE_OBJECT:
+					repr = value.to_string()
+				else:
+					repr = str(repr)
+			if repr.length() > 32:
+				repr = repr.left(32) + "..."
+			display_text += " (" + repr + ")"
+		display_text += REFERENCE_END_SUFFIX_CHAR
+		
+		add_code_completion_option(
+			CodeEdit.KIND_CONSTANT,
+			display_text,
+			constant + "||",
+			get_theme_color(&"font-color"),
+			Scraper.get_type_icon(value, &"MemberConstant"),
+			value
+		)
 
 
 func _confirm_code_completion(replace: bool = false) -> void:

@@ -3,6 +3,12 @@ class_name Named
 extends Node
 
 
+## [constant ]
+const CONTANT_STRING = "ah"
+const CONTANT_INT = 5
+## [constant BbcodeEdit]
+const BbcodeEdit = preload("res://addons/bbcode_edit/bbcode_edit.gd")
+
 ## Press [color=   red   
 ## ]Ctrl + C oh no[/color].
 ## [b
