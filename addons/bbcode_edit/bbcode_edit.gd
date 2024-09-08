@@ -282,6 +282,22 @@ func check_parameter_completions(to_test: String, describes_i: int, describes: S
 			add_signal_completion_from_script(EditorInterface.get_script_editor().get_current_script())
 			add_classes_completion()
 			return true
+		"enum":
+			if parameters.size() >= 2:
+				var path: PackedStringArray = parameters[1].split(".")
+				if path.size() >= 2:
+					if ClassDB.class_exists(path[0]):
+						add_enum_completion_from_class_name(path[0])
+					else:
+						for other_class_ in ProjectSettings.get_global_class_list():
+							if other_class_["class"] == path[0]:
+								add_enum_completion_from_script(load(other_class_["path"]))
+								break
+					update_code_completion_options(true)
+					return true
+			add_enum_completion_from_script(EditorInterface.get_script_editor().get_current_script())
+			add_classes_completion()
+			return true
 	
 	return false
 
@@ -470,6 +486,42 @@ func add_signals(signals: Array[Dictionary]) -> void:
 			CodeEdit.KIND_SIGNAL,
 			signal_["name"] + REFERENCE_END_SUFFIX_CHAR,
 			signal_["name"] + "||",
+			get_theme_color(&"font-color"),
+			icon,
+		)
+
+
+func add_enum_completion_from_script(class_: Script) -> void:
+	var map := class_.get_script_constant_map()
+	var probable_enums: PackedStringArray
+	
+	for constant in map:
+		if typeof(map[constant]) == TYPE_DICTIONARY:
+			var candidate: Dictionary = map[constant]
+			if candidate.values().all(_is_int):
+				probable_enums.append(constant)
+	
+	if probable_enums:
+		add_enums(probable_enums)
+	
+	add_enum_completion_from_class_name(class_.get_instance_base_type())
+
+
+static func _is_int(value: Variant) -> bool:
+	return typeof(value) == TYPE_INT
+
+
+func add_enum_completion_from_class_name(class_: StringName) -> void:
+	add_enums(ClassDB.class_get_enum_list(class_))
+
+
+func add_enums(enums: PackedStringArray) -> void:
+	var icon: Texture2D = Scraper.get_icon(&"Enum")
+	for enum_ in enums:
+		add_code_completion_option(
+			CodeEdit.KIND_ENUM,
+			enum_ + REFERENCE_END_SUFFIX_CHAR,
+			enum_ + "||",
 			get_theme_color(&"font-color"),
 			icon,
 		)

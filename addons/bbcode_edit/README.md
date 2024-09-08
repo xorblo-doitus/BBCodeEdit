@@ -22,13 +22,15 @@ A Godot addon that help editing BBCode in CodeEdit nodes, especially useful for 
     - [x] Hexadecimal color preview
     - [x] Color picker
   - [ ] URL of files? (Don't know if file url works)
-  - [ ] Documentation comments's references: (NB: [Inner Classes](https://docs.godotengine.org/en/4.3/tutorials/scripting/gdscript/gdscript_basics.html#inner-classes) wont be properly proposed in completions)
+  - [x] Documentation comments's references: (NB: [Inner Classes](https://docs.godotengine.org/en/4.3/tutorials/scripting/gdscript/gdscript_basics.html#inner-classes) wont be properly proposed in completions)
     - [x] Classes
     - [x] Parameters
     - [x] Members (aka. Properties)
     - [x] Methods (aka. Functions)
     - [x] Constants
     - [x] Signals
+    - [x] Enums
+    - [ ] Other references like annotations, operator... are not implemented, because rarely used.
 - [ ] ~~BBCode preview (trough [SyntaxHighlighter](https://docs.godotengine.org/en/4.3/classes/class_syntaxhighlighter.html)?)~~\
       ~~Edit: Won't work because GDSCriptSyntaxHighlighter can't be extended\
       BBCode spellcheck/semi-preview (trough `_draw()` ?)~~\

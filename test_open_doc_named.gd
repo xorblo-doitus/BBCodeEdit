@@ -3,6 +3,30 @@ class_name Named
 extends Node
 
 
+## Short desc.
+##
+## Long desc.
+## [enum NamedEnum]
+## [enum Named.NamedEnum.D]
+## [enum CodeEdit.CodeCompletionKind]
+## [constant OH]
+## [constant D]
+## [enum ]
+## [constant ]
+## [enum NamedEnum]
+
+
+enum NamedEnum {
+	A,
+	B,
+	## Artificial long desc: [br][br][br][br][br][br][br][br][br][br][br][br][br][br][br][br][br][br][br][br][br][br][br][br][br][br][br][br][br][br][br][br][br][br]
+	C,
+	D,
+}
+enum OtherNamedEnum {D}
+enum {OH, NO}
+
+
 ## [constant ]
 const CONTANT_STRING = "ah"
 const CONTANT_INT = 5
@@ -29,6 +53,7 @@ var truc: bool
 ## [member ]
 var dyamic = 987
 var varying: Variant = "987"
+@warning_ignore("unused_private_class_variable")
 var _str: String = "987"
 var machin: int = 123
 ## [member ]
