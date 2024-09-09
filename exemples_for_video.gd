@@ -7,5 +7,5 @@ extends Node
 
 ## [color=736f92][/color]
 ## 
-## See 
+## See [member Sprite2D.texture]
 var dummy

@@ -134,6 +134,29 @@ func add_completion_options() -> void:
 		update_code_completion_options(true)
 		return
 	
+	if to_test[0] == "[":
+		add_code_completion_option(
+			CodeEdit.KIND_PLAIN_TEXT,
+			"Note:",
+			"b]Note:[/b] ",
+			get_theme_color(&"font-color"),
+			Scraper.get_icon(&"TextMesh"),
+		)
+		add_code_completion_option(
+			CodeEdit.KIND_PLAIN_TEXT,
+			"Warning:",
+			"b]Warning:[/b] ",
+			get_theme_color(&"font-color"),
+			Scraper.get_icon(&"TextMesh"),
+		)
+		add_code_completion_option(
+			CodeEdit.KIND_PLAIN_TEXT,
+			"Example:",
+			"b]Example:[/b] ",
+			get_theme_color(&"font-color"),
+			Scraper.get_icon(&"TextMesh"),
+		)
+	
 	var prev_line_i: int = line_i - 1
 	var prev_line: String = get_line(prev_line_i).strip_edges(true, false)
 	while prev_line.begins_with("##"):

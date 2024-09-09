@@ -21,15 +21,15 @@ Documentation reference are completed:
 - [ ] Code completion for:
   - [x] Most used BBCode tags
   - [ ] All BBCode tags (See [Godot Reference](https://docs.godotengine.org/en/4.3/tutorials/ui/bbcode_in_richtextlabel.html#reference))
-  - [ ] Documentation comments:
+  - [x] Documentation comments:
     - [x] formating tags
     - [x] referencing tag
     - [x] `@` tags:
       - [x] deprecated
       - [x] experimental
       - [x] tutorial
-    - [ ] Snipets:
-      - [ ] **Note:**, **Warning:**...
+    - [x] Snipets:
+      - [x] **Note:**, **Warning:**...
 - [ ] Classify tags accepted in documentation comments according to [Godot Reference](https://docs.godotengine.org/en/4.3/tutorials/scripting/gdscript/gdscript_documentation_comments.html#bbcode-and-class-reference)
 - [ ] Advanced completions:
   - [x] Color:
