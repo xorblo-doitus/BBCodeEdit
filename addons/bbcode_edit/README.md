@@ -14,6 +14,11 @@ Documentation reference are completed:
 ![Reference completion](/addons/bbcode_edit/.assets_for_readme/reference_completion.gif)
 
 
+Some useful snippets are included:
+
+![A "Note" snippet, with the sae formating as the one used in the official documentation](/addons/bbcode_edit/.assets_for_readme/snippet.gif)
+
+
 # Features
 
 *Checked items are the implemented ones, unchacked are the ones in development*

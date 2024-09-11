@@ -5,7 +5,26 @@ extends Node
 ##
 ## Desc
 
+
+
+
+
+
+
 ## [color=736f92][/color]
 ## 
 ## See [member Sprite2D.texture]
 var dummy
+
+
+
+
+
+## [b]Note:[/b] 
+
+
+
+
+
+
+#
