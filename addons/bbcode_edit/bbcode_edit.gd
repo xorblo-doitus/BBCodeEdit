@@ -73,10 +73,12 @@ func add_completion_options() -> void:
 	print_rich("[color=red]in bbcode completion[/color]")
 	
 	var to_test: String = trim_doc_comment_start(line.left(column_i))
-	if to_test[0] == "@" and not (
-		to_test.begins_with("@tutorial: ")
-		or to_test.begins_with("@deprecated: ")
-		or to_test.begins_with("@experimental: ")
+	var line_only: String = to_test
+	
+	if line_only[0] == "@" and not (
+		line_only.begins_with("@tutorial: ")
+		or line_only.begins_with("@deprecated: ")
+		or line_only.begins_with("@experimental: ")
 	):
 		add_code_completion_option(
 			CodeEdit.KIND_PLAIN_TEXT,
@@ -134,29 +136,6 @@ func add_completion_options() -> void:
 		update_code_completion_options(true)
 		return
 	
-	if to_test[0] == "[":
-		add_code_completion_option(
-			CodeEdit.KIND_PLAIN_TEXT,
-			"Note:",
-			"b]Note:[/b] ",
-			get_theme_color(&"font-color"),
-			Scraper.get_icon(&"TextMesh"),
-		)
-		add_code_completion_option(
-			CodeEdit.KIND_PLAIN_TEXT,
-			"Warning:",
-			"b]Warning:[/b] ",
-			get_theme_color(&"font-color"),
-			Scraper.get_icon(&"TextMesh"),
-		)
-		add_code_completion_option(
-			CodeEdit.KIND_PLAIN_TEXT,
-			"Example:",
-			"b]Example:[/b] ",
-			get_theme_color(&"font-color"),
-			Scraper.get_icon(&"TextMesh"),
-		)
-	
 	var prev_line_i: int = line_i - 1
 	var prev_line: String = get_line(prev_line_i).strip_edges(true, false)
 	while prev_line.begins_with("##"):
@@ -181,6 +160,29 @@ func add_completion_options() -> void:
 		return
 	
 	var font_color: Color = get_theme_color(&"font_color")
+	
+	if line_only[0] == "[":
+		add_code_completion_option(
+			CodeEdit.KIND_PLAIN_TEXT,
+			"Note:",
+			"b]Note:[/b] ",
+			font_color,
+			Scraper.get_icon(&"TextMesh"),
+		)
+		add_code_completion_option(
+			CodeEdit.KIND_PLAIN_TEXT,
+			"Warning:",
+			"b]Warning:[/b] ",
+			font_color,
+			Scraper.get_icon(&"TextMesh"),
+		)
+		add_code_completion_option(
+			CodeEdit.KIND_PLAIN_TEXT,
+			"Example:",
+			"b]Example:[/b] ",
+			font_color,
+			Scraper.get_icon(&"TextMesh"),
+		)
 	
 	# TODO only propose valid tags
 	var completions: Array[String] = (
