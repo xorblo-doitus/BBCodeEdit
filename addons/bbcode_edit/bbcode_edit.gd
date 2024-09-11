@@ -471,12 +471,13 @@ func add_classes_completion() -> void:
 
 func add_member_completion_from_script(class_: Script) -> void:
 	add_members(class_.get_script_property_list())
-	add_member_completion_from_class_name(class_.get_instance_base_type())
+	# Don't show inherited things, because the reference won't work.
+	#add_member_completion_from_class_name(class_.get_instance_base_type())
 
 
 
 func add_member_completion_from_class_name(class_: StringName) -> void:
-	add_members(ClassDB.class_get_property_list(class_))
+	add_members(ClassDB.class_get_property_list(class_, true))
 
 
 func add_members(members: Array[Dictionary]) -> void:
@@ -507,11 +508,12 @@ func get_icon_for_member(member: Dictionary, fallback: StringName = &"MemberProp
 
 func add_method_completion_from_script(class_: Script) -> void:
 	add_methods(class_.get_method_list())
-	add_method_completion_from_class_name(class_.get_instance_base_type())
+	# Don't show inherited things, because the reference won't work.
+	#add_method_completion_from_class_name(class_.get_instance_base_type())
 
 
 func add_method_completion_from_class_name(class_: StringName) -> void:
-	add_methods(ClassDB.class_get_method_list(class_))
+	add_methods(ClassDB.class_get_method_list(class_, true))
 
 
 func add_methods(methods: Array[Dictionary]) -> void:
@@ -536,11 +538,12 @@ func get_icon_for_method(method: Dictionary) -> Texture2D:
 
 func add_constant_completion_from_script(class_: Script) -> void:
 	add_constants(class_.get_script_constant_map())
-	add_constant_completion_from_class_name(class_.get_instance_base_type())
+	# Don't show inherited things, because the reference won't work.
+	#add_constant_completion_from_class_name(class_.get_instance_base_type())
 
 
 func add_constant_completion_from_class_name(class_: StringName) -> void:
-	for constant_name in ClassDB.class_get_integer_constant_list(class_):
+	for constant_name in ClassDB.class_get_integer_constant_list(class_, true):
 		add_constants({constant_name: ClassDB.class_get_integer_constant(class_, constant_name)})
 
 
@@ -578,11 +581,12 @@ func add_constants(constants: Dictionary) -> void:
 
 func add_signal_completion_from_script(class_: Script) -> void:
 	add_signals(class_.get_script_signal_list())
-	add_signal_completion_from_class_name(class_.get_instance_base_type())
+	# Don't show inherited things, because the reference won't work.
+	#add_signal_completion_from_class_name(class_.get_instance_base_type())
 
 
 func add_signal_completion_from_class_name(class_: StringName) -> void:
-	add_signals(ClassDB.class_get_signal_list(class_))
+	add_signals(ClassDB.class_get_signal_list(class_, true))
 
 
 func add_signals(signals: Array[Dictionary]) -> void:
@@ -610,7 +614,8 @@ func add_enum_completion_from_script(class_: Script) -> void:
 	if probable_enums:
 		add_enums(probable_enums)
 	
-	add_enum_completion_from_class_name(class_.get_instance_base_type())
+	# Don't show inherited things, because the reference won't work.
+	#add_enum_completion_from_class_name(class_.get_instance_base_type())
 
 
 static func _is_int(value: Variant) -> bool:
@@ -618,7 +623,7 @@ static func _is_int(value: Variant) -> bool:
 
 
 func add_enum_completion_from_class_name(class_: StringName) -> void:
-	add_enums(ClassDB.class_get_enum_list(class_))
+	add_enums(ClassDB.class_get_enum_list(class_, true))
 
 
 func add_enums(enums: PackedStringArray) -> void:

@@ -1,1 +1,3 @@
-- [ ] Don't show reference completion of parent members, cause it wont work in the doc.
+- [x] Don't show reference completion of parent members, cause it wont work in the doc.
+- [ ] Add a way to auto correct references that are in fact from a parent class?
+- [ ] Fix Note, Warning, etc. showing up in other tags
