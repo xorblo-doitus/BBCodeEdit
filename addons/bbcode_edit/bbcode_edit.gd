@@ -505,7 +505,7 @@ func get_icon_for_member(member: Dictionary, fallback: StringName = &"MemberProp
 	if member["type"] == TYPE_OBJECT:
 		return Scraper.get_class_icon(member["class_name"], fallback)
 	
-	return Scraper.get_icon(Scraper.TYPE_TO_NAME.get(member["type"], fallback))
+	return Scraper.get_builtin_type_icon(member["type"], fallback)
 
 
 func add_method_completion_from_script(class_: Script) -> void:
