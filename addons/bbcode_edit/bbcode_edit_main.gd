@@ -9,6 +9,7 @@ const Scraper = preload("res://addons/bbcode_edit/editor_interface_scraper.gd")
 const ADDON_NAME = "BBCode Editor"
 const ACTION_SETTINGS: Array[StringName] = [
 	&"input/bbcode_edit/editor/open_current_file_documentation",
+	&"input/bbcode_edit/toggle_bold",
 ]
 
 
@@ -54,9 +55,28 @@ func _on_editor_startup() -> void:
 
 
 func add_keybinds() -> void:
+	var toggle_bold := InputEventKey.new()
+	toggle_bold.alt_pressed = true
+	toggle_bold.keycode = 66
+	ProjectSettings.set_setting(
+		&"input/bbcode_edit/toggle_bold",
+		{
+			"deadzone": 0.5,
+			"events": [toggle_bold],
+		}
+	)
+	
+	if Engine.is_editor_hint():
+		add_editor_keybinds()
+	
+	ProjectSettings.save()
+	print_rich("[color=orange]If you don't see the keybinds in the InputMap, please reload the Project.[/color]")	
+
+
+func add_editor_keybinds() -> void:
 	var open_current_file_documentation := InputEventKey.new()
 	open_current_file_documentation.shift_pressed = true
-	open_current_file_documentation.physical_keycode = 4194332
+	open_current_file_documentation.keycode = 4194332
 	ProjectSettings.set_setting(
 		&"input/bbcode_edit/editor/open_current_file_documentation",
 		{
@@ -67,14 +87,10 @@ func add_keybinds() -> void:
 	# NB: Initial values DON'T work, see [url]https://github.com/godotengine/godot/issues/56598[/url]
 	#ProjectSettings.set_initial_value(&"input/bbcode_edit/editor/open_current_file_documentation", open_current_file_documentation.duplicate())
 	
-	ProjectSettings.save()
-	print_rich("[color=orange]If you don't see the keybinds in the InputMap, please reload the Project.[/color]")	
-
-
 
 
 func remove_keybinds() -> void:
-	# ... Possible other keybinds here
+	ProjectSettings.set_setting(&"input/bbcode_edit/toggle_bold", null)
 	
 	# This calls ProjectSettings.save(), so please call it last
 	remove_editor_keybinds()

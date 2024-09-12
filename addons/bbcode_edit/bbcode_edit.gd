@@ -640,6 +640,85 @@ func add_enums(enums: PackedStringArray) -> void:
 		)
 
 
+func toggle_tag(tag: String) -> void:
+	var prefix: String = "[" + tag + "]"
+	var prefix_len: int = prefix.length()
+	var suffix: String = "[/" + tag + "]"
+	var suffix_len: int = suffix.length()
+	
+	var main_selection_from_column: int = get_selection_from_column()
+	var main_selection_from_line: int = get_selection_from_line()
+	var main_selection_to_column: int = get_selection_to_column()
+	var main_selection_to_line: int = get_selection_to_line()
+	var main_selection_end_line: String = get_line(main_selection_to_line)
+	
+	if (
+		main_selection_from_column > prefix_len
+		and get_line(main_selection_from_line).substr(
+			main_selection_from_column - prefix_len,
+			prefix_len
+		) == prefix
+		and main_selection_to_column <= main_selection_end_line.length() - suffix_len
+		and main_selection_end_line.substr(
+			main_selection_to_column,
+			suffix_len
+		) == suffix
+	):
+		begin_complex_operation()
+		begin_multicaret_edit()
+		
+		for caret in get_caret_count():
+			if multicaret_edit_ignore_caret(caret):
+				continue
+			
+			var initial_text: String = get_selected_text(caret)
+			var initial_start_column: int = get_selection_from_column(caret)
+			var initial_end_column: int = get_selection_to_column(caret)
+			
+			select(
+				get_selection_from_line(caret),
+				initial_start_column - prefix_len,
+				get_selection_to_line(caret),
+				initial_end_column + suffix_len,
+				caret
+			)
+			insert_text_at_caret(initial_text, caret)
+			select(
+				get_selection_from_line(caret),
+				initial_start_column - prefix_len,
+				get_selection_to_line(caret),
+				initial_end_column - prefix_len,
+				caret
+			)
+		
+		end_multicaret_edit()
+		end_complex_operation()
+		return
+	
+	begin_complex_operation()
+	begin_multicaret_edit()
+	
+	for caret in get_caret_count():
+		if multicaret_edit_ignore_caret(caret):
+			continue
+		
+		var initial_start_column: int = get_selection_from_column(caret)
+		var initial_end_column: int = get_selection_to_column(caret)
+		
+		insert_text_at_caret(prefix + get_selected_text(caret) + suffix, caret)
+		
+		select(
+			get_selection_from_line(caret),
+			initial_start_column + prefix_len,
+			get_selection_to_line(caret),
+			initial_end_column + prefix_len,
+			caret
+		)
+	
+	end_multicaret_edit()
+	end_complex_operation()
+
+
 func _confirm_code_completion(replace: bool = false) -> void:
 	var selected_completion: Dictionary = get_code_completion_option(get_code_completion_selected_index())
 	var display_text: String = selected_completion["display_text"]
@@ -750,9 +829,15 @@ func _confirm_code_completion(replace: bool = false) -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
+	if not event.is_pressed() or event.is_echo():
+		return
+	
 	if has_node(COLOR_PICKER_CONTAINER_PATH):
-		if (event is InputEventKey or event is InputEventMouseButton) and event.is_pressed():
+		if event is InputEventKey or event is InputEventMouseButton:
 			get_node(COLOR_PICKER_CONTAINER_PATH).free()
+	
+	if event.is_action(&"bbcode_edit/toggle_bold", true):
+		toggle_tag("b")
 
 
 func _on_text_changed() -> void:

@@ -59,7 +59,7 @@ Some useful snippets are included:
   - [x] Current file documentation (May have a problem if pressed before editor check unsaved status of the file)
   - [ ] Preview of the selected text (or autodetect start and end if no selection)
 - [ ] Add shortcuts for:
-  - [ ] **bold**
+  - [x] **bold**
   - [ ] *italic*
   - [ ] ~~striketrough~~
   - [ ] <u>underline</u>
