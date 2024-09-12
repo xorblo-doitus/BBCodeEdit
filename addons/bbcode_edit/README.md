@@ -58,11 +58,12 @@ Some useful snippets are included:
 - [ ] Add a shortcut to open:
   - [x] Current file documentation (May have a problem if pressed before editor check unsaved status of the file)
   - [ ] Preview of the selected text (or autodetect start and end if no selection)
-- [ ] Add shortcuts for:
-  - [x] **bold**
-  - [x] *italic*
+- [ ] Add shortcuts for:  
+    *You can rebind them in `Project → Project settings → Controls`. If you just enabled the addon, they may appear here only after a restart of the editor.*
+  - [x] **bold** (`alt + B`)
+  - [x] *italic* (`alt + I`)
   - [ ] ~~striketrough~~
-  - [x] <u>underline</u>
+  - [x] <u>underline</u> (`alt + U`)
   - [ ] etc.
 - [ ] Add an external code edit in the editor to write bbcode, because completion inside strings is a nightmare due to builtin behaviors
 
