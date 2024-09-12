@@ -60,9 +60,9 @@ Some useful snippets are included:
   - [ ] Preview of the selected text (or autodetect start and end if no selection)
 - [ ] Add shortcuts for:
   - [x] **bold**
-  - [ ] *italic*
+  - [x] *italic*
   - [ ] ~~striketrough~~
-  - [ ] <u>underline</u>
+  - [x] <u>underline</u>
   - [ ] etc.
 - [ ] Add an external code edit in the editor to write bbcode, because completion inside strings is a nightmare due to builtin behaviors
 

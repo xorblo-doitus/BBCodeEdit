@@ -10,6 +10,8 @@ const ADDON_NAME = "BBCode Editor"
 const ACTION_SETTINGS: Array[StringName] = [
 	&"input/bbcode_edit/editor/open_current_file_documentation",
 	&"input/bbcode_edit/toggle_bold",
+	&"input/bbcode_edit/toggle_italic",
+	&"input/bbcode_edit/toggle_underline",
 ]
 
 
@@ -66,6 +68,28 @@ func add_keybinds() -> void:
 		}
 	)
 	
+	var toggle_italic := InputEventKey.new()
+	toggle_italic.alt_pressed = true
+	toggle_italic.keycode = 73
+	ProjectSettings.set_setting(
+		&"input/bbcode_edit/toggle_italic",
+		{
+			"deadzone": 0.5,
+			"events": [toggle_italic],
+		}
+	)
+	
+	var toggle_underline := InputEventKey.new()
+	toggle_underline.alt_pressed = true
+	toggle_underline.keycode = 85
+	ProjectSettings.set_setting(
+		&"input/bbcode_edit/toggle_underline",
+		{
+			"deadzone": 0.5,
+			"events": [toggle_underline],
+		}
+	)
+	
 	if Engine.is_editor_hint():
 		add_editor_keybinds()
 	
@@ -91,6 +115,8 @@ func add_editor_keybinds() -> void:
 
 func remove_keybinds() -> void:
 	ProjectSettings.set_setting(&"input/bbcode_edit/toggle_bold", null)
+	ProjectSettings.set_setting(&"input/bbcode_edit/toggle_italic", null)
+	ProjectSettings.set_setting(&"input/bbcode_edit/toggle_underline", null)
 	
 	# This calls ProjectSettings.save(), so please call it last
 	remove_editor_keybinds()

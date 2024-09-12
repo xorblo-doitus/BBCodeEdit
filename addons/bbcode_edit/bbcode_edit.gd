@@ -838,6 +838,10 @@ func _gui_input(event: InputEvent) -> void:
 	
 	if event.is_action(&"bbcode_edit/toggle_bold", true):
 		toggle_tag("b")
+	elif event.is_action(&"bbcode_edit/toggle_italic", true):
+		toggle_tag("i")
+	elif event.is_action(&"bbcode_edit/toggle_underline", true):
+		toggle_tag("u")
 
 
 func _on_text_changed() -> void:
