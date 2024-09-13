@@ -4,6 +4,11 @@ A Godot addon that help editing BBCode in CodeEdit nodes, especially useful for 
 
 # Showcase
 
+There are shortcuts to toggle easily some formattings:
+
+![Using keyboard to toggle bold, italic, underline, striketrough](/addons/bbcode_edit/.assets_for_readme/shortcuts.gif)
+
+
 Completion for formatting tags, with some special completions implemented for specific tags:
 
 ![Advanced completion for color tag](/addons/bbcode_edit/.assets_for_readme/color_completion.gif)
