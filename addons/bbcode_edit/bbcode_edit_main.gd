@@ -12,6 +12,7 @@ const ACTION_SETTINGS: Array[StringName] = [
 	&"input/bbcode_edit/toggle_bold",
 	&"input/bbcode_edit/toggle_italic",
 	&"input/bbcode_edit/toggle_underline",
+	&"input/bbcode_edit/toggle_strike",
 ]
 
 
@@ -90,11 +91,39 @@ func add_keybinds() -> void:
 		}
 	)
 	
+	var toggle_strike := InputEventKey.new()
+	toggle_strike.alt_pressed = true
+	toggle_strike.keycode = _get_striketrough_keycode()
+	ProjectSettings.set_setting(
+		&"input/bbcode_edit/toggle_strike",
+		{
+			"deadzone": 0.5,
+			"events": [toggle_strike],
+		}
+	)
+	
 	if Engine.is_editor_hint():
 		add_editor_keybinds()
 	
 	ProjectSettings.save()
 	print_rich("[color=orange]If you don't see the keybinds in the InputMap, please reload the Project.[/color]")	
+
+
+func _get_striketrough_keycode() -> int:
+	var editor_shortcuts: Variant = EditorInterface.get_editor_settings().get(&"shortcuts")
+	
+	if editor_shortcuts == null:
+		return KEY_C
+	
+	for shortcut: Dictionary in editor_shortcuts:
+		if shortcut["name"] == "bottom_panels/toggle_shader_editor_bottom_panel":
+			var input_events: Array = shortcut.get("shortcuts")
+			for input_event: InputEvent in input_events:
+				if input_event.keycode == KEY_S:
+					return KEY_C
+			return KEY_S
+	
+	return KEY_C
 
 
 func add_editor_keybinds() -> void:
@@ -117,6 +146,7 @@ func remove_keybinds() -> void:
 	ProjectSettings.set_setting(&"input/bbcode_edit/toggle_bold", null)
 	ProjectSettings.set_setting(&"input/bbcode_edit/toggle_italic", null)
 	ProjectSettings.set_setting(&"input/bbcode_edit/toggle_underline", null)
+	ProjectSettings.set_setting(&"input/bbcode_edit/toggle_strike", null)
 	
 	# This calls ProjectSettings.save(), so please call it last
 	remove_editor_keybinds()

@@ -59,12 +59,12 @@ Some useful snippets are included:
   - [x] Current file documentation (May have a problem if pressed before editor check unsaved status of the file)
   - [ ] Preview of the selected text (or autodetect start and end if no selection)
 - [ ] Add shortcuts for:  
-    *You can rebind them in `Project → Project settings → Controls`. If you just enabled the addon, they may appear here only after a restart of the editor.*
+    *You can rebind them in `Project → Project settings → Input Map`. If you just enabled the addon, they may appear here only after a restart of the editor. You will have to restart the editor for any change to take effect.*
   - [x] **bold** (`alt + B`)
   - [x] *italic* (`alt + I`)
-  - [ ] ~~striketrough~~
+  - [x] ~~striketrough~~ (`alt + C`, but if you had unbind `alt + S` from `open shader editor`, it will be `alt + S`)
   - [x] <u>underline</u> (`alt + U`)
-  - [ ] etc.
+  - [ ] Wrap in any tag?
 - [ ] Add an external code edit in the editor to write bbcode, because completion inside strings is a nightmare due to builtin behaviors
 
 

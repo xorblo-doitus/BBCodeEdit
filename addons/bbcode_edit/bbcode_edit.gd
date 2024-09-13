@@ -842,6 +842,8 @@ func _gui_input(event: InputEvent) -> void:
 		toggle_tag("i")
 	elif event.is_action(&"bbcode_edit/toggle_underline", true):
 		toggle_tag("u")
+	elif event.is_action(&"bbcode_edit/toggle_strike", true):
+		toggle_tag("s")
 
 
 func _on_text_changed() -> void:
