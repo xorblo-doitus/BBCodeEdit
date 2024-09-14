@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://blcco0wsttyck"]
 
-[ext_resource type="Script" path="res://addons/bbcode_edit/completions_db/fetch_builtin_classes.gd" id="1_tk0nj"]
+[ext_resource type="Script" path="res://addons/bbcode_edit.editor/completions_db/fetch_builtin_classes.gd" id="1_tk0nj"]
 
 [node name="FetchClassDB" type="Node"]
 script = ExtResource("1_tk0nj")

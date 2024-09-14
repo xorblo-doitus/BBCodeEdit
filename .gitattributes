@@ -4,5 +4,5 @@
 # Only include the addons folder when downloading from the Asset Library.
 /**                     export-ignore
 /addons                !export-ignore
-/addons/bbcode_edit    !export-ignore
-/addons/bbcode_edit/*  !export-ignore
+/addons/bbcode_edit.editor    !export-ignore
+/addons/bbcode_edit.editor/*  !export-ignore

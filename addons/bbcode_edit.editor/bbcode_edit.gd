@@ -15,10 +15,10 @@ enum CompletionKind {
 }
 
 
-const Completions = preload("res://addons/bbcode_edit/completions_db/completions.gd")
-const Scraper = preload("res://addons/bbcode_edit/editor_interface_scraper.gd")
+const Completions = preload("res://addons/bbcode_edit.editor/completions_db/completions.gd")
+const Scraper = preload("res://addons/bbcode_edit.editor/editor_interface_scraper.gd")
 
-const BBCODE_COMPLETION_ICON = preload("res://addons/bbcode_edit/bbcode_completion_icon.svg")
+const BBCODE_COMPLETION_ICON = preload("res://addons/bbcode_edit.editor/bbcode_completion_icon.svg")
 const COLOR_PICKER_CONTAINER_PATH = ^"_BBCodeEditColorPicker"
 const COLOR_PICKER_PATH = ^"_BBCodeEditColorPicker/ColorPicker"
 
@@ -738,7 +738,7 @@ func _confirm_code_completion(replace: bool = false) -> void:
 		match parts[0]:
 			_COMMAND_COLOR_PICKER:
 				if not has_node(^"BBCODE_EDIT_COLOR_PICKER"):
-					add_child(preload("res://addons/bbcode_edit/color_picker.tscn").instantiate())
+					add_child(preload("res://addons/bbcode_edit.editor/color_picker.tscn").instantiate())
 				var container: PopupPanel = get_node(COLOR_PICKER_CONTAINER_PATH)
 				var picker: ColorPicker = get_node(COLOR_PICKER_PATH)
 				

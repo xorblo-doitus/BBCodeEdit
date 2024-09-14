@@ -1,10 +1,10 @@
 extends Object
 
 
-const Scraper = preload("res://addons/bbcode_edit/editor_interface_scraper.gd")
+const Scraper = preload("res://addons/bbcode_edit.editor/editor_interface_scraper.gd")
 
 
-const PATH_BUILTIN_COMPLETIONS = "res://addons/bbcode_edit/completions_db/builtin_classes.txt"
+const PATH_BUILTIN_COMPLETIONS = "res://addons/bbcode_edit.editor/completions_db/builtin_classes.txt"
 
 
 # TODO add all tags and classify them between Documentation Only, Documentation Forbidden, Universal

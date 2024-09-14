@@ -6,22 +6,22 @@ A Godot addon that help editing BBCode in CodeEdit nodes, especially useful for 
 
 There are shortcuts to toggle easily some formattings:
 
-![Using keyboard to toggle bold, italic, underline, striketrough](/addons/bbcode_edit/.assets_for_readme/shortcuts.gif)
+![Using keyboard to toggle bold, italic, underline, striketrough](/addons/bbcode_edit.editor/.assets_for_readme/shortcuts.gif)
 
 
 Completion for formatting tags, with some special completions implemented for specific tags:
 
-![Advanced completion for color tag](/addons/bbcode_edit/.assets_for_readme/color_completion.gif)
+![Advanced completion for color tag](/addons/bbcode_edit.editor/.assets_for_readme/color_completion.gif)
 
 
 Documentation reference are completed:
 
-![Reference completion](/addons/bbcode_edit/.assets_for_readme/reference_completion.gif)
+![Reference completion](/addons/bbcode_edit.editor/.assets_for_readme/reference_completion.gif)
 
 
 Some useful snippets are included:
 
-![A "Note" snippet, with the sae formating as the one used in the official documentation](/addons/bbcode_edit/.assets_for_readme/snippet.gif)
+![A "Note" snippet, with the sae formating as the one used in the official documentation](/addons/bbcode_edit.editor/.assets_for_readme/snippet.gif)
 
 
 # Features
@@ -75,7 +75,7 @@ Some useful snippets are included:
 
 ## Intallation
 
-Download only `res://addons/bbcode_edit`.
+Download only `res://addons/bbcode_edit.editor`.
 
 
 ## Godot version

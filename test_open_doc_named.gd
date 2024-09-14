@@ -1,4 +1,4 @@
-@icon("res://addons/bbcode_edit/bbcode_completion_icon.svg")
+@icon("res://addons/bbcode_edit.editor/bbcode_completion_icon.svg")
 class_name Named
 extends Node
 
@@ -36,7 +36,7 @@ enum {OH, NO}
 const CONTANT_STRING = "ah"
 const CONTANT_INT = 5
 ## [constant BbcodeEdit]
-const BbcodeEdit = preload("res://addons/bbcode_edit/bbcode_edit.gd")
+const BbcodeEdit = preload("res://addons/bbcode_edit.editor/bbcode_edit.gd")
 
 ## Press [color=   red   
 ## ]Ctrl + C oh no[/color].
@@ -69,7 +69,7 @@ var obj: Node = Node.new()
 
 ## [member auto_translate_mode] [method add_child]
 ## Testazeiln,azlekj,azUPDATE3[color=aqua]azejnzaekj[/color]
-## aaa[img width=32 height=10 color=red region=0,0,10,10 tootip=hello]res://addons/bbcode_edit/bbcode_completion_icon.svg[/img]bbb
+## aaa[img width=32 height=10 color=red region=0,0,10,10 tootip=hello]res://addons/bbcode_edit.editor/bbcode_completion_icon.svg[/img]bbb
 func doc_test()-> void:
 	pass
 

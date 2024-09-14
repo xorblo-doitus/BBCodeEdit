@@ -2,8 +2,8 @@
 extends EditorPlugin
 
 
-const BBCodeEdit: GDScript = preload("res://addons/bbcode_edit/bbcode_edit.gd")
-const Scraper = preload("res://addons/bbcode_edit/editor_interface_scraper.gd")
+const BBCodeEdit: GDScript = preload("res://addons/bbcode_edit.editor/bbcode_edit.gd")
+const Scraper = preload("res://addons/bbcode_edit.editor/editor_interface_scraper.gd")
 
 
 const ADDON_NAME = "BBCode Editor"

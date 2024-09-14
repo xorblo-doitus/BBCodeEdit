@@ -4,7 +4,7 @@ extends Node
 ## This has to be a scene.
 ## (In an EditorScript, editor specifc classes would polute the result)
 
-const Completions = preload("res://addons/bbcode_edit/completions_db/completions.gd")
+const Completions = preload("res://addons/bbcode_edit.editor/completions_db/completions.gd")
 
 
 func _ready() -> void:

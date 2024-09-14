@@ -12,12 +12,13 @@ config_version=5
 
 config/name="BBCodeEdit"
 config/tags=PackedStringArray("addon")
+run/main_scene="res://test_export.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/bbcode_edit/plugin.cfg")
+enabled=PackedStringArray("res://addons/bbcode_edit.editor/plugin.cfg")
 
 [input]
 
