@@ -1,1 +1,1 @@
-addons/bbcode_edit/README.md
+addons/bbcode_edit.editor/README.md
