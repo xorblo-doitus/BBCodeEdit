@@ -7,8 +7,10 @@
 # Temporary files
 *.tmp.*
 *.tmp
+tmp.*
 *.temp.*
 *.temp
+temp.*
 
 # Backups
 *.backup.*
