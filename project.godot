@@ -14,7 +14,7 @@ config/name="BBCodeEdit"
 config/tags=PackedStringArray("addon")
 run/main_scene="res://test_export.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
-config/icon="res://icon.svg"
+config/icon="res://icon.png"
 
 [editor_plugins]
 
