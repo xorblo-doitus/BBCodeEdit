@@ -1,5 +1,8 @@
-# BBCodeEdit
-A Godot addon that help editing BBCode in CodeEdit nodes, especially useful for documentation comments in the ScriptEditor.
+# BBCodeEdit (for script editor[^editor_only])
+
+A Godot addon that brings BBCode completion and QOL tools to the script editor
+in order to help formatting documentation comments.
+(May be extended to any CodeEdit in the future.[^editor_only])
 
 
 # Showcase
@@ -26,11 +29,11 @@ Some useful snippets are included:
 
 # Features
 
-*Checked items are the implemented ones, unchacked are the ones in development*
+*Checked items are the implemented ones, unchacked are the ones in development.[^editor_only]*
 
 - [ ] Code completion for:
   - [x] Most used BBCode tags
-  - [ ] All BBCode tags (See [Godot Reference](https://docs.godotengine.org/en/4.3/tutorials/ui/bbcode_in_richtextlabel.html#reference))
+  - [ ] All BBCode tags[^editor_only] (See [Godot Reference](https://docs.godotengine.org/en/4.3/tutorials/ui/bbcode_in_richtextlabel.html#reference))
   - [x] Documentation comments:
     - [x] formating tags
     - [x] referencing tag
@@ -70,12 +73,18 @@ Some useful snippets are included:
   - [x] ~~striketrough~~ (`alt + C`, but if you had unbind `alt + S` from `open shader editor`, it will be `alt + S`)
   - [x] <u>underline</u> (`alt + U`)
   - [ ] Wrap in any tag?
-- [ ] Add an external code edit in the editor to write bbcode, because completion inside strings is a nightmare due to builtin behaviors
+- [ ] Add an external CodeEdit in the editor to write bbcode, because completion inside strings is a nightmare due to builtin behaviors.[^editor_only]
 
 
 ## Intallation
 
 Download only `res://addons/bbcode_edit.editor`.
+
+To edit shortcuts, first restart the editor, then modify them,
+and restart the editor so that Godot updates the input map.
+
+You can also exclude `*.editor/*` or `bbcode_edit.editor/` from your export presets,
+because this addon is (for now) editor only.
 
 
 ## Godot version
@@ -85,4 +94,12 @@ Godot 4.3 (May work with previous 4.x versions)
 
 # Status
 
-In development, will flood output with debug info.
+Development halted, but really handy. Will flood output with debug info.
+
+[^editor_only]: **Note:** All non-script-editor-related features are on hold for now
+  because I don't have the time nor the needs to implement them.
+  This would also require refactoring the `bbcode_edit.gd` into two separate classes.
+  One with all [RichTextLabel's tags](https://docs.godotengine.org/en/4.3/tutorials/ui/bbcode_in_richtextlabel.html#reference)
+  and one with [Documentation comments' tags](https://docs.godotengine.org/en/4.3/tutorials/scripting/gdscript/gdscript_documentation_comments.html#bbcode-and-class-reference).
+  If you really need BBCode completion in a CodeEdit (eg. for an inspector plugin, or for any code edit within an exported project),
+  I *may* give it a try, or you could contribute this refactor (this repo is under the MIT Licence).
