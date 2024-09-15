@@ -188,7 +188,8 @@ func add_completion_options() -> void:
 	var completions: Array[String] = (
 		Completions.TAGS_UNIVERSAL
 		+ Completions.TAGS_DOC_COMMENT_FORMATTING
-		+ Completions.TAGS_RICH_TEXT_LABEL
+		# TODO MAYBE: I have to refactor everything related to tag availability.
+		#+ Completions.TAGS_RICH_TEXT_LABEL
 	)
 	var displays: Array[String] = []
 	displays.assign(completions.map(_bracket))
