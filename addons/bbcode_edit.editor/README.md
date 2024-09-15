@@ -29,7 +29,7 @@ Some useful **snippets** are included:
 ![A "Note" snippet, with the same formatting as the one used in the official documentation](/addons/bbcode_edit.editor/.assets_for_readme/snippet.gif)
 
 
-# Features
+# Features / Roadmap
 
 *Checked items are the implemented ones, unchecked are the ones in development.[^editor_only]*
 
@@ -86,7 +86,7 @@ To edit shortcuts, first restart the editor, then modify them,
 and restart the editor so that Godot updates the input map.
 
 You can also exclude `*.editor/*` or `bbcode_edit.editor/` from your export presets,
-because this addon is (for now) script-editor-only.
+because this addon is (for now[^editor_only]) script-editor-only.
 
 
 ## Godot version
