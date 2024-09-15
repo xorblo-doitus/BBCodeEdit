@@ -47,7 +47,7 @@ Some useful snippets are included:
 - [ ] Advanced completions:
   - [x] Color:
     - [x] Named colors
-    - [x] Hexadecimal color preview
+    - [x] Hexadecimal color preview (**Note: ** If it starts with a digit, `0x` will be prefixed temporarily because Godot cancels int completion)
     - [x] Color picker
   - [ ] URL of files? (Don't know if file url works)
   - [x] Documentation comments's references: (NB: [Inner Classes](https://docs.godotengine.org/en/4.3/tutorials/scripting/gdscript/gdscript_basics.html#inner-classes) wont be properly proposed in completions)
@@ -94,7 +94,7 @@ Godot 4.3 (May work with previous 4.x versions)
 
 # Status
 
-Development halted, but really handy. Will flood output with debug info.
+Development halted, but really handy.
 
 [^editor_only]: **Note:** All non-script-editor-related features are on hold for now
   because I don't have the time nor the needs to implement them.

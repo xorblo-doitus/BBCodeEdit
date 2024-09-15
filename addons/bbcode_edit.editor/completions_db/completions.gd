@@ -244,7 +244,6 @@ static func get_class_completions() -> ClassCompletions:
 				icon_class = class_to_base[icon_class]
 				if icon_class in class_to_icon:
 					icon_cache[class_name_] = load(class_to_icon[icon_class])
-					print(icon_cache)
 					icons.append(icon_cache[class_name_])
 					break
 			if len(icons) != len(class_names):

@@ -184,18 +184,17 @@ func open_doc(script: Script, code_edit: CodeEdit = null) -> void:
 		var bbcode_edit_saved_once: PackedStringArray = EditorInterface.get_meta(&"bbcode_edit_saved_once", PackedStringArray())
 		if code_edit and class_name_ not in bbcode_edit_saved_once:
 			bbcode_edit_saved_once.append(class_name_)
-			print_rich("[color=orange]Never changed[/color]")
+			print_rich("[color=orange]The script never changed since startup: brute-forcing documentation generation. (See [url=https://github.com/godotengine/godot/pull/95821]godot#95821[/url])[/color]")
 			code_edit.text = code_edit.text
 			EditorInterface.save_all_scenes()
 		elif Scraper.is_current_script_unsaved():
-			# TODO ↑ Fix this of non-current script
-			print_rich("[color=orange]Is unsaved[/color]")
+			# TODO ↑ Fix this for non-current script
+			print_rich("[color=orange]Saving to make godot generate documentation.[/color]")
 			EditorInterface.save_all_scenes()
 	
 	elif Scraper.is_current_script_unsaved():
-		print_rich("[color=orange]Is unsaved[/color]")
+		print_rich("[color=orange]Saving to make godot generate documentation.[/color]")
 		EditorInterface.save_all_scenes()
-	print(class_name_)
 	
 	EditorInterface.get_script_editor().get_current_editor().go_to_help.emit.call_deferred("class_name:"+class_name_)
 

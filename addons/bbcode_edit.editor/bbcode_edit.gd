@@ -58,7 +58,7 @@ func _init() -> void:
 
 
 func add_completion_options() -> void:
-	print("Code completion options requested")
+	#print("Code completion options requested")
 	var line_i: int = get_caret_line()
 	var line: String = get_line(line_i)
 	var column_i: int = get_caret_column()
@@ -66,11 +66,11 @@ func add_completion_options() -> void:
 	
 	if comment_i == -1 or get_delimiter_start_key(comment_i) != "##":
 		if line[column_i-1] == "[":
-			print_rich("[color=red]Emergency cancel[/color]")
+			#print_rich("[color=red]Emergency cancel[/color]")
 			cancel_code_completion()
-		print_rich("[color=red]not in bbcode completion[/color]")
+		#print_rich("[color=red]not in bbcode completion[/color]")
 		return
-	print_rich("[color=red]in bbcode completion[/color]")
+	#print_rich("[color=red]in bbcode completion[/color]")
 	
 	var to_test: String = trim_doc_comment_start(line.left(column_i))
 	var line_only: String = to_test
@@ -144,10 +144,10 @@ func add_completion_options() -> void:
 		prev_line = get_line(prev_line_i).strip_edges(true, false)
 	
 	to_test = to_test.split("]")[-1]#.split("=")[-1]
-	print_rich("to_test:[color=magenta][code] ", to_test)
+	#print_rich("to_test:[color=magenta][code] ", to_test)
 	
 	if "[" not in to_test:
-		print("No BRACKET")
+		#print("No BRACKET")
 		update_code_completion_options(true)
 		return
 	
@@ -193,7 +193,7 @@ func add_completion_options() -> void:
 	var displays: Array[String] = []
 	displays.assign(completions.map(_bracket))
 	
-	print("First completion is: ", completions[0])
+	#print("First completion is: ", completions[0])
 	
 	for i in completions.size():
 		add_code_completion_option(
@@ -269,8 +269,8 @@ func check_parameter_completions(to_test: String, describes_i: int, describes: S
 		parameters.append(split[0])
 		values.append(split[1] if split.size() == 2 else MALFORMED)
 	
-	print_rich("Parameters:[color=magenta] ", parameters)
-	print_rich("Values:[color=magenta] ", values)
+	#print_rich("Parameters:[color=magenta] ", parameters)
+	#print_rich("Values:[color=magenta] ", values)
 	
 	if parameters.is_empty():
 		return false
@@ -279,12 +279,9 @@ func check_parameter_completions(to_test: String, describes_i: int, describes: S
 		var value: String = values[0]
 		match parameters[0]:
 			"color":
-				print("COLOR")
 				if value.begins_with(HEX_PREFIX) and value.substr(HEX_PREFIX.length()).is_valid_html_color():
-					print("Hex")
 					add_hex_color(value.substr(HEX_PREFIX.length()), true)
 				elif value.is_valid_html_color():
-					print("Create hex")
 					if value.is_valid_int():
 						insert_text(HEX_PREFIX, get_caret_line(), get_caret_column()-value.length())
 						request_code_completion.call_deferred(true)
@@ -306,7 +303,7 @@ func check_parameter_completions(to_test: String, describes_i: int, describes: S
 					next_line_i += 1
 					next_line = get_line(next_line_i)
 				describes += next_line
-			print_rich("Describes: [color=purple][code]", describes)
+			#print_rich("Describes: [color=purple][code]", describes)
 			
 			for part in (
 				REGEX_PARENTHESES.search(describes).get_string().trim_prefix("(").trim_suffix(")").split(",")
@@ -762,7 +759,7 @@ func _confirm_code_completion(replace: bool = false) -> void:
 		0
 	)
 	
-	print_rich("Kind is [color=red][code]", CompletionKind.find_key(kind))
+	#print_rich("Kind is [color=red][code]", CompletionKind.find_key(kind))
 	
 	begin_complex_operation()
 	
@@ -783,7 +780,6 @@ func _confirm_code_completion(replace: bool = false) -> void:
 		for caret in get_caret_count():
 			var line: String = get_line(get_caret_line(caret)) + " " # Add space so that column is in range
 			var column: int = get_caret_column(caret)
-			print(line)
 			if not line[column] == "]":
 				insert_text_at_caret("]", caret)
 				# Replace caret at it's previous column
@@ -801,7 +797,6 @@ func _confirm_code_completion(replace: bool = false) -> void:
 			)
 			set_caret_column(column - HEX_PREFIX.length())
 		
-		print_rich("[color=red]Color is true[/color]")
 		for caret in get_caret_count():
 			set_caret_column(get_caret_column(caret) + 1, false, caret) 
 	elif kind:
