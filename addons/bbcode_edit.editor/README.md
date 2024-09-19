@@ -80,7 +80,12 @@ Some useful **snippets** are included:
 
 ## Intallation
 
-Download only `res://addons/bbcode_edit.editor`.
+You can download the addon:
+- On GitHub: `Code` → `Download ZIP`.
+- Through the editor: `AssetLib` → Search for "BBCodeEdit"
+
+*By default, this readme is included, along with it's illustrations. If you don't want them,
+do not download `addons/bbcode_edit.editor/README.md` nor `addons/bbcode_edit.editor/.assets_for_readme/*`*
 
 To edit shortcuts, first restart the editor, then modify them,
 and restart the editor so that Godot updates the input map.
