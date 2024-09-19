@@ -5,4 +5,4 @@
 /**                     export-ignore
 /addons                !export-ignore
 /addons/bbcode_edit.editor    !export-ignore
-/addons/bbcode_edit.editor/*  !export-ignore
+/addons/bbcode_edit.editor/**  !export-ignore
