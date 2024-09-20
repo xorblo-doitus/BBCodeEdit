@@ -2,7 +2,8 @@
 * text=auto eol=lf
 
 # Only include the addons folder when downloading from the Asset Library.
-/**                     export-ignore
-/addons                !export-ignore
-/addons/bbcode_edit.editor    !export-ignore
+/**                             export-ignore
+/addons                        !export-ignore
+/addons/bbcode_edit.editor     !export-ignore
 /addons/bbcode_edit.editor/**  !export-ignore
+/addons/bbcode_edit.editor/.assets_for_readme/*.mp4   export-ignore
