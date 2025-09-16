@@ -8,6 +8,7 @@ func foo
 	pass
 
 
+@warning_ignore("unused_parameter")
 func bar
 
 (param1: Node2D, param2
@@ -17,7 +18,7 @@ param3: Rect2i
 	pass
 
 
-
+@warning_ignore("unused_parameter")
 static func sbar(param1: Node2D, param2
 , # Comment
 param3: Rect2i
@@ -30,7 +31,7 @@ class SubClass:
 	()-> void:
 		pass
 
-
+	@warning_ignore("unused_parameter")
 	func bar
 
 	(param1: Node2D, param2
@@ -39,7 +40,7 @@ class SubClass:
 	)-> void:
 		pass
 
-
+	@warning_ignore("unused_parameter")
 	static func sbar(param1: Node2D, param2
 	, # Comment
 	param3: Rect2i
