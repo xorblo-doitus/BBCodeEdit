@@ -56,7 +56,7 @@ var truc: bool
 @export_category("cat")
 @export_group("grouuuup")
 ## [member ]
-var dyamic = 987
+var dynamic = 987
 var varying: Variant = "987"
 @warning_ignore("unused_private_class_variable")
 var _str: String = "987"
