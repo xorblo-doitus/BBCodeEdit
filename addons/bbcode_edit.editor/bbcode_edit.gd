@@ -18,11 +18,16 @@ enum CompletionKind {
 const Completions = preload("res://addons/bbcode_edit.editor/completions_db/completions.gd")
 const Scraper = preload("res://addons/bbcode_edit.editor/editor_interface_scraper.gd")
 
+## @deprecated: Superseded by Tag Toggler
 const ACTION_TOGGLE_BOLD = &"bbcode_edit/toggle_bold"
+## @deprecated: Superseded by Tag Toggler
 const ACTION_TOGGLE_ITALIC = &"bbcode_edit/toggle_italic"
+## @deprecated: Superseded by Tag Toggler
 const ACTION_TOGGLE_UNDERLINE = &"bbcode_edit/toggle_underline"
+## @deprecated: Superseded by Tag Toggler
 const ACTION_TOGGLE_STRIKE = &"bbcode_edit/toggle_strike"
 
+## @deprecated: Superseded by Tag Toggler
 const TOGGLING_ACTIONS = {
 	ACTION_TOGGLE_BOLD: "b",
 	ACTION_TOGGLE_ITALIC: "i",
@@ -664,6 +669,7 @@ func add_enums(enums: PackedStringArray) -> void:
 		)
 
 
+## @deprecated: Superseded by bbedit/tag_toggler sub-plugin
 func toggle_tag(tag: String) -> void:
 	var prefix: String = "[" + tag + "]"
 	var prefix_len: int = prefix.length()
@@ -866,12 +872,12 @@ func _gui_input(event: InputEvent) -> void:
 		if event is InputEventKey or event is InputEventMouseButton:
 			get_node(COLOR_PICKER_CONTAINER_PATH).free()
 	
-	for action in TOGGLING_ACTIONS:
-		if is_action(event, action):
-			toggle_tag(TOGGLING_ACTIONS[action])
+	#for action in TOGGLING_ACTIONS:
+		#if is_action(event, action):
+			#toggle_tag(TOGGLING_ACTIONS[action])
 
 
-func is_action(event: InputEvent, action: StringName) -> bool:
+static func is_action(event: InputEvent, action: StringName) -> bool:
 	return InputMap.has_action(action) and event.is_action(action, true)
 
 
