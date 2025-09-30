@@ -64,9 +64,34 @@ func get_current_focused_window() -> Window:
 		return focused_window
 	
 	print("Compatibility problem with Godot 4.4-")
-	# TODO Find a way to do that pre Godot 4.4
-	return get_window()
+	
+	var windows := get_windows()
+	var focused_window: Window = null
+	while focused_window == null:
+		await get_tree().create_timer(0.2).timeout
+		
+		for window in windows:
+			#prints(window, window.has_focus())
+			if window.has_focus():
+				return window # I know that
+		# calling the static method directly on Window would be more elegant,
+		# but it would cause a static analysis error on Godot 4.4 and before.
+		
+		print("attempting")
+	return focused_window
 
+## @deprecated: Useless in Godot 4.5+
+func get_windows() -> Array[Window]:
+	var windows: Array[Window] = []
+	var to_check: Array[Node] = [get_tree().root]
+	
+	while to_check:
+		var current_node: Node = to_check.pop_back()
+		if current_node is Window:
+			windows.push_back(current_node)
+		to_check.append_array(current_node.get_children())
+	
+	return windows
 
 #func _process(_delta: float) -> void:
 	#print(Window.get_focused_window())
