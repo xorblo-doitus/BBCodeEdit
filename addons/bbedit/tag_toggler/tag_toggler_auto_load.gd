@@ -21,6 +21,7 @@ const TOGGLING_ACTIONS = {
 func _ready() -> void:
 	print("ready")
 	connect_to_window(get_window())
+	connect_to_window(await get_current_focused_window())
 
 
 func disconnect_from(editor: TextEdit) -> void:
@@ -38,6 +39,7 @@ func connect_to_window(window: Window) -> void:
 	print_rich("[color=green]Connecting to " + str(window))
 	window.gui_focus_changed.connect(_on_focus_changed)
 	window.focus_exited.connect(_on_window_focus_exited.call_deferred)
+	_on_focus_changed(window.gui_get_focus_owner())
 
 
 func _on_window_focus_exited() -> void:
