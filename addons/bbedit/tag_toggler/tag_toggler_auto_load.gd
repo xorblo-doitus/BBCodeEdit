@@ -50,7 +50,11 @@ func get_current_focused_window() -> Window:
 		var focused_window: Window = null
 		while focused_window == null:
 			await get_tree().process_frame
-			focused_window = Window.get_focused_window()
+			
+			focused_window = get_window().get_focused_window() # I know that
+			# calling the static method directly on Window would be more elegant,
+			# but it would cause a static analysis error on Godot 4.4 and before.
+			
 			print("attempting")
 		return focused_window
 	
