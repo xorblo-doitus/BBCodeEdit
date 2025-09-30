@@ -20,7 +20,7 @@ const TOGGLING_ACTIONS = {
 
 func _ready() -> void:
 	print("ready")
-	get_window().gui_focus_changed.connect(_on_focus_changed)
+	connect_to_window(get_window())
 
 
 func disconnect_from(editor: TextEdit) -> void:
@@ -29,6 +29,38 @@ func disconnect_from(editor: TextEdit) -> void:
 func connect_to(editor: TextEdit) -> void:
 	editor.gui_input.connect(_on_focused_editor_gui_input.bind(editor))
 
+
+func connect_to_window(window: Window) -> void:
+	if window.gui_focus_changed.is_connected(_on_focus_changed):
+		print_rich("[color=green]Skipping already connected " + str(window))
+		return
+	
+	print_rich("[color=green]Connecting to " + str(window))
+	window.gui_focus_changed.connect(_on_focus_changed)
+	window.focus_exited.connect(_on_window_focus_exited.call_deferred)
+
+
+func _on_window_focus_exited() -> void:
+	print_rich("[color=red]FOCUS LOST")
+	connect_to_window(await get_current_focused_window())
+
+
+func get_current_focused_window() -> Window:
+	if Engine.get_version_info().hex >= 0x04_05_00: # only in Godot 4.5
+		var focused_window: Window = null
+		while focused_window == null:
+			await get_tree().process_frame
+			focused_window = Window.get_focused_window()
+			print("attempting")
+		return focused_window
+	
+	print("Compatibility problem with Godot 4.4-")
+	# TODO Find a way to do that pre Godot 4.4
+	return get_window()
+
+
+#func _process(_delta: float) -> void:
+	#print(Window.get_focused_window())
 
 func _on_focus_changed(control: Control) -> void:
 	#if focused_editor:
