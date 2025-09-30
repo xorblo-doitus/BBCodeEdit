@@ -28,6 +28,9 @@ func disconnect_from(editor: TextEdit) -> void:
 	editor.gui_input.disconnect(_on_focused_editor_gui_input)
 
 func connect_to(editor: TextEdit) -> void:
+	if editor.gui_input.is_connected(_on_focused_editor_gui_input):
+		print_rich("[color=green]Skipping already connected TextEdit.")
+		return
 	editor.gui_input.connect(_on_focused_editor_gui_input.bind(editor))
 
 
