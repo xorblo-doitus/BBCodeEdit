@@ -15,8 +15,8 @@ enum CompletionKind {
 }
 
 
-const Completions = preload("res://addons/bbcode_edit.editor/completions_db/completions.gd")
-const Scraper = preload("res://addons/bbcode_edit.editor/editor_interface_scraper.gd")
+const Completions = preload("res://addons/bbcode_edit/doc_comment.editor/completions_db/completions.gd")
+const Scraper = preload("res://addons/bbcode_edit/doc_comment.editor/editor_interface_scraper.gd")
 
 ## @deprecated: Superseded by Tag Toggler
 const ACTION_TOGGLE_BOLD = &"bbcode_edit/toggle_bold"
@@ -35,7 +35,7 @@ const TOGGLING_ACTIONS = {
 	ACTION_TOGGLE_STRIKE: "s",
 }
 
-const BBCODE_COMPLETION_ICON = preload("res://addons/bbcode_edit.editor/bbcode_completion_icon.svg")
+const BBCODE_COMPLETION_ICON = preload("res://addons/bbcode_edit/doc_comment.editor/bbcode_completion_icon.svg")
 const COLOR_PICKER_CONTAINER_PATH = ^"_BBCodeEditColorPicker"
 const COLOR_PICKER_PATH = ^"_BBCodeEditColorPicker/ColorPicker"
 
@@ -669,7 +669,7 @@ func add_enums(enums: PackedStringArray) -> void:
 		)
 
 
-## @deprecated: Superseded by bbedit/tag_toggler sub-plugin
+## @deprecated: Superseded by bbcode_edit/tag_toggler sub-plugin
 func toggle_tag(tag: String) -> void:
 	var prefix: String = "[" + tag + "]"
 	var prefix_len: int = prefix.length()
@@ -776,7 +776,7 @@ func _confirm_code_completion(replace: bool = false) -> void:
 		match parts[0]:
 			_COMMAND_COLOR_PICKER:
 				if not has_node(^"BBCODE_EDIT_COLOR_PICKER"):
-					add_child(preload("res://addons/bbcode_edit.editor/color_picker.tscn").instantiate())
+					add_child(preload("res://addons/bbcode_edit/doc_comment.editor/color_picker.tscn").instantiate())
 				var container: PopupPanel = get_node(COLOR_PICKER_CONTAINER_PATH)
 				var picker: ColorPicker = get_node(COLOR_PICKER_PATH)
 				

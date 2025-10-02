@@ -1,4 +1,4 @@
-@icon("res://addons/bbcode_edit.editor/bbcode_completion_icon.svg")
+@icon("res://addons/bbcode_edit/doc_comment.editor/bbcode_completion_icon.svg")
 extends Node
 
 

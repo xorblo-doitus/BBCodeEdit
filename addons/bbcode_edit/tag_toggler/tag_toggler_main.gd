@@ -3,7 +3,7 @@ extends EditorPlugin
 
 
 
-const ADDON_NAME = "BBEdit: Tag Toggler"
+const ADDON_NAME = "BBCodeEdit: Tag Toggler"
 
 
 
@@ -12,7 +12,7 @@ const ADDON_NAME = "BBEdit: Tag Toggler"
 
 func _enable_plugin() -> void:
 	print("Enabling ", ADDON_NAME)
-	add_autoload_singleton("TagToggler", "res://addons/bbedit/tag_toggler/tag_toggler_auto_load.gd")
+	add_autoload_singleton("TagToggler", "res://addons/bbcode_edit/tag_toggler/tag_toggler_auto_load.gd")
 	print("Enabled ", ADDON_NAME)
 
 

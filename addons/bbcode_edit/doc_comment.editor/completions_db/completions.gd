@@ -1,10 +1,10 @@
 extends Object
 
 
-const GodotVersion = preload("res://addons/bbcode_edit.editor/completions_db/godot_version.gd")
-const Scraper = preload("res://addons/bbcode_edit.editor/editor_interface_scraper.gd")
+const GodotVersion = preload("res://addons/bbcode_edit/doc_comment.editor/completions_db/godot_version.gd")
+const Scraper = preload("res://addons/bbcode_edit/doc_comment.editor/editor_interface_scraper.gd")
 
-const _BUILTIN_COMPLETIONS_PATH_BEGINING = "res://addons/bbcode_edit.editor/completions_db/builtin_classes_"
+const _BUILTIN_COMPLETIONS_PATH_BEGINING = "res://addons/bbcode_edit/doc_comment.editor/completions_db/builtin_classes_"
 const DONT_ASK_TO_FETCH_SETTING_PATH = "addons/bbcode_edit/editor/dont_ask_to_fetch_builtin_classes"
 
 const equivalent_versions: Dictionary = {
@@ -309,7 +309,7 @@ static func get_class_completions() -> ClassCompletions:
 
 
 static func fetch_builtin_classes() -> void:
-	EditorInterface.play_custom_scene("res://addons/bbcode_edit.editor/completions_db/fetch_builtin_classes.tscn")
+	EditorInterface.play_custom_scene("res://addons/bbcode_edit/doc_comment.editor/completions_db/fetch_builtin_classes.tscn")
 	while EditorInterface.is_playing_scene():
 		await EditorInterface.get_base_control().get_tree().create_timer(0.1, true, false, true).timeout
 	

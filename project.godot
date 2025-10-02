@@ -18,11 +18,11 @@ config/icon="res://icon.png"
 
 [autoload]
 
-TagToggler="*res://addons/bbedit/tag_toggler/tag_toggler_auto_load.gd"
+TagToggler="*res://addons/bbcode_edit/tag_toggler/tag_toggler_auto_load.gd"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/bbcode_edit.editor/plugin.cfg", "res://addons/bbedit/tag_toggler/plugin.cfg", "res://addons/explore-editor-theme/plugin.cfg")
+enabled=PackedStringArray("res://addons/bbcode_edit/doc_comment.editor/plugin.cfg", "res://addons/bbcode_edit/tag_toggler/plugin.cfg", "res://addons/explore-editor-theme/plugin.cfg")
 
 [input]
 

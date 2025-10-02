@@ -1,7 +1,7 @@
 @tool
 extends Node
 
-const TagToggler = preload("res://addons/bbedit/tag_toggler/tag_toggler.gd")
+const TagToggler = preload("res://addons/bbcode_edit/tag_toggler/tag_toggler.gd")
 
 const ACTION_TOGGLE_BOLD = &"bbcode_edit/toggle_bold"
 const ACTION_TOGGLE_ITALIC = &"bbcode_edit/toggle_italic"
