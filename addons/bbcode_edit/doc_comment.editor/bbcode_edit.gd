@@ -15,14 +15,19 @@ enum CompletionKind {
 }
 
 
-const Completions = preload("res://addons/bbcode_edit.editor/completions_db/completions.gd")
-const Scraper = preload("res://addons/bbcode_edit.editor/editor_interface_scraper.gd")
+const Completions = preload("res://addons/bbcode_edit/doc_comment.editor/completions_db/completions.gd")
+const Scraper = preload("res://addons/bbcode_edit/doc_comment.editor/editor_interface_scraper.gd")
 
+## @deprecated: Superseded by Tag Toggler
 const ACTION_TOGGLE_BOLD = &"bbcode_edit/toggle_bold"
+## @deprecated: Superseded by Tag Toggler
 const ACTION_TOGGLE_ITALIC = &"bbcode_edit/toggle_italic"
+## @deprecated: Superseded by Tag Toggler
 const ACTION_TOGGLE_UNDERLINE = &"bbcode_edit/toggle_underline"
+## @deprecated: Superseded by Tag Toggler
 const ACTION_TOGGLE_STRIKE = &"bbcode_edit/toggle_strike"
 
+## @deprecated: Superseded by Tag Toggler
 const TOGGLING_ACTIONS = {
 	ACTION_TOGGLE_BOLD: "b",
 	ACTION_TOGGLE_ITALIC: "i",
@@ -30,7 +35,7 @@ const TOGGLING_ACTIONS = {
 	ACTION_TOGGLE_STRIKE: "s",
 }
 
-const BBCODE_COMPLETION_ICON = preload("res://addons/bbcode_edit.editor/bbcode_completion_icon.svg")
+const BBCODE_COMPLETION_ICON = preload("res://addons/bbcode_edit/doc_comment.editor/bbcode_completion_icon.svg")
 const COLOR_PICKER_CONTAINER_PATH = ^"_BBCodeEditColorPicker"
 const COLOR_PICKER_PATH = ^"_BBCodeEditColorPicker/ColorPicker"
 
@@ -664,6 +669,7 @@ func add_enums(enums: PackedStringArray) -> void:
 		)
 
 
+## @deprecated: Superseded by bbcode_edit/tag_toggler sub-plugin
 func toggle_tag(tag: String) -> void:
 	var prefix: String = "[" + tag + "]"
 	var prefix_len: int = prefix.length()
@@ -770,7 +776,7 @@ func _confirm_code_completion(replace: bool = false) -> void:
 		match parts[0]:
 			_COMMAND_COLOR_PICKER:
 				if not has_node(^"BBCODE_EDIT_COLOR_PICKER"):
-					add_child(preload("res://addons/bbcode_edit.editor/color_picker.tscn").instantiate())
+					add_child(preload("res://addons/bbcode_edit/doc_comment.editor/color_picker.tscn").instantiate())
 				var container: PopupPanel = get_node(COLOR_PICKER_CONTAINER_PATH)
 				var picker: ColorPicker = get_node(COLOR_PICKER_PATH)
 				
@@ -866,12 +872,12 @@ func _gui_input(event: InputEvent) -> void:
 		if event is InputEventKey or event is InputEventMouseButton:
 			get_node(COLOR_PICKER_CONTAINER_PATH).free()
 	
-	for action in TOGGLING_ACTIONS:
-		if is_action(event, action):
-			toggle_tag(TOGGLING_ACTIONS[action])
+	#for action in TOGGLING_ACTIONS:
+		#if is_action(event, action):
+			#toggle_tag(TOGGLING_ACTIONS[action])
 
 
-func is_action(event: InputEvent, action: StringName) -> bool:
+static func is_action(event: InputEvent, action: StringName) -> bool:
 	return InputMap.has_action(action) and event.is_action(action, true)
 
 

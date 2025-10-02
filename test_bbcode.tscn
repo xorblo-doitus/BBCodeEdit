@@ -7,6 +7,17 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 bbcode_enabled = true
-text = "Press [b]Ctrl + C[/b].
+text = "test
+
+
+
+Press [b]Ctrl + C[/b].
 Press [b ]Ctrl + C[/b].
-Press [color=   red   ]Ctrl + C[/color]."
+[b][b]Press[/b][/b] [color=   red   ]Ctrl + C[/color]."
+
+[node name="TextEdit" type="TextEdit" parent="."]
+layout_mode = 0
+offset_left = 300.0
+offset_top = 221.0
+offset_right = 525.0
+offset_bottom = 390.0

@@ -11,22 +11,22 @@ in order to help format documentation comments.
 
 There are **shortcuts** to easily toggle some formattings:
 
-![Using the keyboard to toggle bold, italic, underline, striketrough](/addons/bbcode_edit.editor/.assets_for_readme/shortcuts.gif)
+![Using the keyboard to toggle bold, italic, underline, striketrough](/.assets_for_readme/shortcuts.gif)
 
 
 **Completion** for formatting tags, with some special completions implemented for specific tags:
 
-![Advanced completion for color tag](/addons/bbcode_edit.editor/.assets_for_readme/color_completion.gif)
+![Advanced completion for color tag](/.assets_for_readme/color_completion.gif)
 
 
 **Documentation references** are completed:
 
-![Reference completion](/addons/bbcode_edit.editor/.assets_for_readme/reference_completion.gif)
+![Reference completion](/.assets_for_readme/reference_completion.gif)
 
 
 Some useful **snippets** are included:
 
-![A "Note" snippet, with the same formatting as the one used in the official documentation](/addons/bbcode_edit.editor/.assets_for_readme/snippet.gif)
+![A "Note" snippet, with the same formatting as the one used in the official documentation](/.assets_for_readme/snippet.gif)
 
 
 ## Features / Roadmap
@@ -84,17 +84,14 @@ You can download the addon:
 - On GitHub: `Code` → `Download ZIP`.
 - Through the editor: `AssetLib` → Search for "BBCodeEdit"
 
-*By default, this readme is included, along with it's illustrations. If you don't want them,
-do not download `addons/bbcode_edit.editor/README.md` nor `addons/bbcode_edit.editor/.assets_for_readme/*`*
-
-*You can also remove `addons/bbcode_edit.editor/completions_cd/builtin_classes_[godot versions that you don't use].txt`*
+*You can remove `addons/bbcode_edit/doc_comment.editor/completions_cd/builtin_classes_[godot versions that you don't use].txt`*
 
 To edit shortcuts:
 - *If they don't show up* in the input map GUI: first restart the editor
 - modify them in the input map GUI
 - **restart** the editor to update the input map.
 
-You can also exclude `*.editor/*` or `bbcode_edit.editor/` from your export presets,
+You can also exclude `*.editor/*` or `bbcode_edit/doc_comment.editor/` from your export presets,
 because this addon is (for now[^editor_only]) script-editor-only.
 
 
