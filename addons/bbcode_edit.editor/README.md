@@ -109,7 +109,7 @@ want to bother finding a workaround unless someone want to use the addon in this
 
 ## Development Status
 
-<abbr title="Long Term Support">LTS</abbr>, no major updates. But the addon is really handy as-is.
+<abbr title="Long Term Support">LTS</abbr>, no major updates. But the addon is really handy as-is. It may receive *little* feature updates.
 
 [^editor_only]: **Note:** All non-script-editor-related features are on hold for now
   because I don't have the time nor the need to implement them.
