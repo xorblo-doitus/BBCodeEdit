@@ -8,7 +8,11 @@ const _BUILTIN_COMPLETIONS_PATH_BEGINING = "res://addons/bbcode_edit.editor/comp
 const DONT_ASK_TO_FETCH_SETTING_PATH = "addons/bbcode_edit/editor/dont_ask_to_fetch_builtin_classes"
 
 const equivalent_versions: Dictionary = {
-	"4.4.1": "4.4"
+	"4.4.1": "4.4",
+	"4.6.1": "4.6",
+	"4.6.2": "4.6",
+	"4.7.1": "4.7",
+	"4.7.2": "4.7",
 }
 
 
