@@ -24,7 +24,7 @@ There are **shortcuts** to easily toggle some formattings:
 ![Reference completion](/addons/bbcode_edit.editor/.assets_for_readme/reference_completion.gif)
 
 
-Some useful **snippets** are included:
+Some useful **snippets** are included: *(Replaced by [admonitions](https://github.com/godotengine/godot/pull/111375) in Godot 4.8+)*
 
 ![A "Note" snippet, with the same formatting as the one used in the official documentation](/addons/bbcode_edit.editor/.assets_for_readme/snippet.gif)
 
