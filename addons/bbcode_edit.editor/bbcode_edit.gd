@@ -87,7 +87,7 @@ func add_completion_options() -> void:
 	var to_test: String = trim_doc_comment_start(line.left(column_i))
 	var line_only: String = to_test
 	
-	if line_only[0] == "@" and not (
+	if line_only and line_only[0] == "@" and not (
 		line_only.begins_with("@tutorial: ")
 		or line_only.begins_with("@deprecated: ")
 		or line_only.begins_with("@experimental: ")
@@ -173,7 +173,7 @@ func add_completion_options() -> void:
 	
 	var font_color: Color = get_theme_color(&"font_color")
 	
-	if line_only[0] == "[":
+	if line_only and line_only[0] == "[":
 		add_code_completion_option(
 			CodeEdit.KIND_PLAIN_TEXT,
 			"Note:",
