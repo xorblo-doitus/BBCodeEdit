@@ -173,7 +173,7 @@ func add_completion_options() -> void:
 	
 	var font_color: Color = get_theme_color(&"font_color")
 	
-	if line_only and line_only[0] == "[":
+	if line_only and line_only[0] == "[" and not Completions.ADMONITIONS_SUPPORTED:
 		add_code_completion_option(
 			CodeEdit.KIND_PLAIN_TEXT,
 			"Note:",
