@@ -1,3 +1,4 @@
+@tool
 extends Object
 
 
@@ -62,11 +63,21 @@ const TAGS_DOC_COMMENT_REFERENCE: Array[String] = [
 	"signal |",
 	"theme_item |",
 ]
-const TAGS_DOC_COMMENT_FORMATTING: Array[String] = [
+
+static var TAGS_DOC_COMMENT_FORMATTING: Array[String] = [
 	"codeblock]|[/codeblock",
 	"br||",
 	"kbd]|[/kbd",
 ]
+## See [url=https://github.com/godotengine/godot/pull/111375]Godot#111375[/url] 
+const ADMONITIONS = [
+	"note]|[/note][br",
+	"warning]|[/warning][br",
+	"tip]|[/tip][br",
+	"important]|[/important][br",
+]
+static var ADMONITIONS_SUPPORTED = Engine.get_version_info().hex >= 0x040800 
+
 # TODO add all tags
 const TAGS_RICH_TEXT_LABEL: Array[String] = [
 	# TODO complete with all options
@@ -222,6 +233,9 @@ const COLORS: Array[StringName] = [
 	"yellow_green",
 ]
 
+static func _static_init() -> void:
+	if ADMONITIONS_SUPPORTED:
+		TAGS_DOC_COMMENT_FORMATTING.append_array(ADMONITIONS)
 
 static var _BUILTIN_CLASSES: PackedStringArray = PackedStringArray()
 
