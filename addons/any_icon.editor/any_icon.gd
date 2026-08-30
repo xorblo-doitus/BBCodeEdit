@@ -2,7 +2,7 @@
 class_name AnyIcon
 extends Object
 
-## A singleton providing easy access to icons representing classes and types.
+## A singleton providing easy access to icons representing classes and types, from values or members.
 ##
 ## Use [method get_variant_icon] for the highest abstraction when getting an icon by value.
 ## There are some methods related to preperty types too, such as [method get_property_icon_from_dict].
@@ -161,29 +161,28 @@ static func get_class_icon(name: StringName, fallback: StringName = &"") -> Text
 
 ## See also [method get_class_icon]
 static func get_custom_class_icon(name: StringName, fallback: StringName = &"") -> Texture2D:
+	name = _reduce_class_name(name)
+	
+	if ClassDB.class_exists(name):
+		return get_builtin_class_icon(name, fallback)
+	
 	if allow_generating_union_icons and "," in name:
 		return generate_union_class_icon(name, fallback)
 	
-	var found: bool = true
-	var global_class_list := ProjectSettings.get_global_class_list()
-	
-	while found:
-		found = false
+	while true:
+		var class_infos := _find_global_class(name)
+		if class_infos.is_empty():
+			break
 		
-		for class_ in global_class_list:
-			if class_["class"] == name:
-				if class_["icon"]:
-					return load(class_["icon"])
-				else:
-					name = class_["base"]
-					
-					if ClassDB.class_exists(name):
-						return get_builtin_class_icon(name, fallback)
-						
-					found = true
-					break # break the for
+		if class_infos["icon"]:
+			return load(class_infos["icon"])
+		
+		name = class_infos["base"]
+		
+		if ClassDB.class_exists(name):
+			return get_builtin_class_icon(name, fallback)
 	
-	# This can happen for invlaid name, such as a type union
+	# This can happen for an invalid name, such as a type union
 	# (ex: "CanvasItemMaterial,ShaderMaterial")
 	return get_icon(fallback)
 
@@ -200,6 +199,8 @@ static func get_type_icon(type: Variant.Type, fallback: StringName = &"") -> Tex
 
 ## See also [method get_class_icon]
 static func get_builtin_class_icon(class_name_: StringName, fallback: StringName = &"") -> Texture2D:
+	class_name_ = _reduce_class_name(class_name_)
+	
 	if allow_generating_union_icons and "," in class_name_:
 		return generate_union_class_icon(class_name_, fallback)
 	
@@ -232,6 +233,60 @@ static func get_icon(name: StringName, theme_type: StringName = &"EditorIcons") 
 ## Returns true if the passed [param icon] is not [member icon_not_found].
 static func is_valid(icon: Texture2D) -> bool:
 	return icon != icon_not_found
+
+
+static func _reduce_class_name(name: String) -> String:
+	var candidates: Array[String];candidates.assign(name.split(","))
+	var kept = []
+	
+	while not candidates.is_empty():
+		var candidate = candidates.pop_back()
+		
+		var passing := true
+		for i in range(len(candidates) - 1, -1, -1):
+			var other := candidates[i]
+			if _is_parent_class(other, candidate):
+				candidates.remove_at(i)
+			elif _is_parent_class(candidate, other):
+				passing = false
+				break
+
+		if passing:
+			kept.append(candidate)
+	
+	kept.reverse()
+	return ",".join(kept)
+
+
+static func _is_parent_class(child: StringName, parent: StringName) -> bool:
+	if ClassDB.class_exists(child):
+		if ClassDB.class_exists(parent):
+			return ClassDB.is_parent_class(child, parent)
+		else:
+			return false
+	else:
+		if child == parent:
+			return not _find_global_class(child).is_empty()
+		
+		while child != parent:
+			var child_infos := _find_global_class(child)
+			
+			if child_infos.is_empty():
+				return false
+				
+			child = child_infos["base"]
+			
+			if ClassDB.class_exists(child):
+				return ClassDB.is_parent_class(child, parent)
+		return true
+
+
+## [b]Note:[/b] Returns an empty dict if class is not found.
+static func _find_global_class(name: StringName) -> Dictionary:
+	for class_infos: Dictionary in ProjectSettings.get_global_class_list():
+		if class_infos["class"] == name:
+			return class_infos
+	return {}
 
 
 func _init() -> void:
