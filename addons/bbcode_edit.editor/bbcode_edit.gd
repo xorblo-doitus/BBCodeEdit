@@ -195,6 +195,13 @@ func add_completion_options() -> void:
 			font_color,
 			AnyIcon.get_icon(&"TextMesh"),
 		)
+		add_code_completion_option(
+			CodeEdit.KIND_PLAIN_TEXT,
+			"Tip:",
+			"b]Tip:[/b] ",
+			font_color,
+			AnyIcon.get_icon(&"TextMesh"),
+		)
 	
 	# TODO only propose valid tags
 	var completions: Array[String] = (
